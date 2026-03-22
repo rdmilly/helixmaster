@@ -238,6 +238,8 @@ async function fetchLiveData(){
     document.getElementById('live-dot').className='li-dot';
     document.getElementById('live-label').textContent='live';
     if(d.last_session) updateLastSession(d.last_session);
+    // Auto-sync task statuses from API
+    if(d.task_statuses) updateTaskStatuses(d.task_statuses);
     if(d.phases) updatePhases(d.phases);
     if(d.open_questions) updateQuestions(d.open_questions);
     if(d.journal) updateJournal(d.journal);
@@ -265,6 +267,23 @@ function updatePhases(apiPhases){
         if(t&&at.status) t.status=at.status;
       });
     }
+  });
+  renderPNav(); renderPDetail();
+}
+function updateTaskStatuses(statuses){
+  // Match tasks by name substring and update status
+  statuses.forEach(s=>{
+    phases.forEach(p=>{
+      p.tasks.forEach(t=>{
+        if(t.name.toLowerCase().includes(s.name.toLowerCase().split(' ').slice(0,3).join(' ').toLowerCase())){
+          if(t.status!==s.status){
+            if(s.status==='done'&&t.status!=='done') p.done=Math.min(p.total,p.done+1);
+            if(t.status==='done'&&s.status!=='done') p.done=Math.max(0,p.done-1);
+            t.status=s.status;
+          }
+        }
+      });
+    });
   });
   renderPNav(); renderPDetail();
 }
