@@ -209,6 +209,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 .modal-cancel{font-family:var(--mono);font-size:11px;background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:6px;padding:7px 18px;cursor:pointer}
 .li-dot{width:5px;height:5px;border-radius:50%;background:var(--live)}
 .li-dot.stale{background:var(--warn)}
+
+.je-type{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-bottom:9px;vertical-align:middle}
+.jt-feat{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.jt-fix{background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.3)}
+.jt-infra{background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3)}
+.jt-debug{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}
+.jt-docs{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3)}
+.jt-style{background:rgba(244,208,63,.15);color:#f4d03f;border:1px solid rgba(244,208,63,.3)}
+.jt-data{background:rgba(34,211,238,.15);color:#22d3ee;border:1px solid rgba(34,211,238,.3)}
 </style>
 </head>
 <body>
@@ -393,6 +402,17 @@ document.getElementById('modal').addEventListener('click',e=>{if(e.target===docu
 
 const jEntries=[{date:'2026-03-22',session:'helix-mcp-v2',title:'helix-mcp v2.0 — single MCP surface, all tools centralized through manifest → provisioner → helix-mcp → cortex REST',body:'Rewrote helix-mcp server.py with 33 tools (up from 10). All file ops, search, intelligence writes, language/compression, and scheduler tools now proxy to cortex REST endpoints. Added POST /api/v1/archive/record to cortex. Removed cortex MCP mount entirely — /mcp returns 404. Fixed pg_sync/SQLite bugs across 5 router/service files: VACUUM INTO, sqlite_master, FTS5 MATCH, and ? placeholder all replaced with proper Postgres equivalents. Provisioner manifest updated: helix-workspace renamed to helix, old cortex 25-tool entry removed, 47 servers total. 24/24 tool groups tested and passing.',decisions:[{text:'helix-mcp is the ONLY MCP surface — cortex exposes REST only (ADR-013)',status:'live'},{text:'pg_sync.sqlite_conn() must never be used with SQLite-only syntax (ADR-014)',status:'live'},{text:'Postgres FTS: use plainto_tsquery() not FTS5 MATCH syntax',status:'live'}],build_plan:[{text:'Build /api/v1/master/status endpoint',status:'next'},{text:'Fix Observer flush failures (fetch failed — non-fatal)',status:'next'},{text:'Wire Haiku reconciler to patch status JSON',status:'plan'}],glance:'Architecture is now clean. One MCP surface. Full pipeline on every write. 24/24 tests passing. The last remaining foundation item is the /api/v1/master/status endpoint to make this site fully live.',tags:['helix-mcp','mcp','architecture','consolidation','pg_sync']},{date:'2026-03-21',session:'722e9fa7',title:'helixmaster v5 deployed — real component audit + dynamic status wired',body:'helixmaster v5 deployed to helixmaster.millyweb.com. Site built from real codebase (8 layers, 40+ components from ls + docker ps). fetchLiveData() wired to /api/v1/master/status — site will update automatically once that endpoint is built. All 5 nice-to-haves implemented: live refresh, inline editor, last session strip, cross-links, question resolution.',decisions:[{text:'helix_file_write deploy_path is the correct tool for large file deploys',status:'live'},{text:'MinIO-direct writes for permanent docs (ADR-001)',status:'live'},{text:'/api/v1/master/status endpoint is Phase 4 next task',status:'live'}],build_plan:[{text:'Build /api/v1/master/status on Helix Cortex',status:'next'},{text:'Wire Haiku reconciler to patch status JSON',status:'plan'}],glance:'Site is live but static. One endpoint makes it fully dynamic. That is the next build task.',tags:['helixmaster','deploy','v5','dynamic']}];
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function jeType(title){
+  var t=(title||'').toLowerCase();
+  if(/fix|bug|broken|crash|error|issue|patch|repair|invalid|syntax/.test(t)) return {cls:'jt-fix',label:'fix'};
+  if(/debug|diagnos|investigat|trace|hunt|root cause/.test(t)) return {cls:'jt-debug',label:'debug'};
+  if(/deploy|vps|nginx|docker|server|routing|sync|ssl|traefik|daemon|infra/.test(t)) return {cls:'jt-infra',label:'infra'};
+  if(/doc|index|readme|skill|handoff|journal|reference|guide/.test(t)) return {cls:'jt-docs',label:'docs'};
+  if(/style|spacing|css|color|layout|ui|design|visual/.test(t)) return {cls:'jt-style',label:'style'};
+  if(/data|db|schema|migration|table|registry|postgres|sql/.test(t)) return {cls:'jt-data',label:'data'};
+  return {cls:'jt-feat',label:'feat'};
+}
 function renderJournal(){
   const el=document.getElementById('jlist');
   if(!el)return;
@@ -409,7 +429,7 @@ function renderJournal(){
       var glance=e.glance&&e.glance.length>5?'<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">'+e.glance+'</div></div>':'';
       return '<div class="je">'
         +'<div class="je-meta">'+(e.date||'')+' — <span style="color:var(--text-dim)">'+(e.session||'')+'</span></div>'
-        +'<div class="je-title">'+(e.title||'(untitled)')+'</div>'
+        +function(){var tp=jeType(e.title);return '<div class="je-type '+tp.cls+'">'+tp.label+'</div>';}()+'<div class="je-title">'+(e.title||'(untitled)')+'</div>'
         +summary
         +(decs?'<div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">'+decs+'</div>':'')
         +(bp?'<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">'+bp+'</div>':'')
