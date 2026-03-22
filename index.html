@@ -300,7 +300,9 @@ const phases=[
     {name:'event_bus wired',comp:'runtime',status:'done',dep:null,note:'Live.'},
     {name:'Conversation ingester cron (5min)',comp:'ingestion',status:'done',dep:'Phase 1',note:'Pure diff — compare checksums, queue new.'},
     {name:'Haiku reconciler cron (hourly)',comp:'intelligence',status:'done',dep:'ingester cron',note:'Extracts ADRs, tasks, journal entries. Patches 5 permanent docs.'},
-    {name:'Shape stub generator',comp:'intelligence',status:'planned',dep:'Haiku reconciler',note:'Detects topic clusters without shape docs.'},
+    {name:'Shape stub generator',comp:'intelligence',status:'planned',dep:'Haiku reconciler',note:'Detects topic clusters without shape docs.'},,
+    {name:'Signal Intelligence — 15 unused sources audited',comp:'intelligence',status:'planned',dep:'action_intelligence',note:'Tier 1 (highest value): observer_sequences (tool chains), shard_diffs (edit patterns), exchanges.rejected_alternatives (dead ends). Tier 2: conventions, expressions, anomalies, embeddings similarity, KG relationships, KG mentions. Tier 3: observer_file_captures (hotspots), membrain_events (injection acceptance), conversations_fts scanner, observer_session_tokens. None currently wired to promoter.'},
+    {name:'helix-feature-add skill — unified update pipeline',comp:'memory',status:'done',dep:'helix_file_write pipeline',note:'Skill covering all 7 touchpoints when adding any Helix feature: journal + handoff + master site + open-questions + ADR + KB index + git. Stored at /opt/projects/helix/skills/helix-feature-add/SKILL.md. Triggered by: add this to helix, mark as done, update build plan.'}
   ]},
   {id:'p3',num:3,name:'Intelligence Chain',done:6,total:6,desc:'Wire language decisions to code decisions. KG becomes traversable map of intent → decision → outcome.',tasks:[
     {name:'entity_upsert + relationship_create',comp:'KG',status:'done',dep:null,note:'Live.'},
