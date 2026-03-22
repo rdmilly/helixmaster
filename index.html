@@ -231,7 +231,6 @@ async function fetchLiveData(){
     const res=await fetch(STATUS_URL,{headers:{'Accept':'application/json'}});
     if(!res.ok) throw new Error(res.status);
     const d=await res.json();
-    console.log('[HELIX] API adr_count:', d.adr_count, typeof d.adr_count, 'adrs:', Array.isArray(d.adrs), d.adrs?.length);
     document.getElementById('stat-cortex').textContent=d.cortex_uptime||'up';
     document.getElementById('stat-chunks').textContent=(d.chunks||0).toLocaleString();
     document.getElementById('stat-containers').textContent=d.containers||'?';
@@ -347,7 +346,7 @@ const phases=[
     {name:'Live data pull wired to status endpoint',comp:'frontend',status:'done',dep:'/api/v1/master/status',note:'fetchLiveData() already coded — just needs the endpoint live.'},
     {name:'Cross-link Components → Roadmap phase',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},
     {name:'Open Questions resolution toggles',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},
-    {name:'Inline doc editor',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},{name:'Git pipeline all 3 repos',comp:'runtime',status:'done',dep:'helix_file_write',note:'rdmilly/helix + rdmilly/membrain + rdmilly/helixmaster auto-commit on every write. GitHub Actions auto-update READMEs hourly.'},
+    {name:'Inline doc editor',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},{name:'Git pipeline all 3 repos',comp:'runtime',status:'done',dep:'helix_file_write',note:'rdmilly/helix + rdmilly/membrain + rdmilly/helixmaster. Auto-commit on every write.'},
   ]},
   {id:'p5',num:5,name:'Assembler',done:10,total:10,desc:'The payoff. Pre-stage code and language scaffolds from pattern recognition across prior sessions.',tasks:[
     {name:'cortex_act interceptor (MemBrain Phase 4)',comp:'membrain',status:'done',dep:'Phase 3+4',note:'SSE stream → detect tool_use → enrich params → release.'},
@@ -355,7 +354,7 @@ const phases=[
     {name:'Assembler pre-staging logic',comp:'intelligence',status:'done',dep:'recurrence + confidence',note:'assembler.py exists. Pattern match → scaffold surfaced before ask.'},
     {name:'Spec/RFC auto-generation from ADR clusters',comp:'intelligence',status:'done',dep:'assembler',note:'3+ ADRs on one topic → haiku.py drafts Spec doc stub.'},{name:'Action Intelligence — outcome tracking + confidence scoring',comp:'intelligence',status:'done',dep:'observer_actions schema',note:'cortex_act logs every tool call with outcome. action_intelligence.py scores patterns. phrase_promoter uses multipliers. ADR-confirmed bypasses threshold. Recovery patterns boosted. Dead-ends penalised.'},
 {name:'action_chains view — failure→success sequences',comp:'intelligence',status:'done',dep:'action_intelligence',note:'SQL view shows what failed before each working fix. Foundation for automated dead-end detection.'},
-{name:'/api/v1/actions/log|signals|chains',comp:'runtime',status:'done',dep:'action_intelligence',note:'Three endpoints. Signals confirms pattern confidence. Chains shows recovery sequences. Log receives cortex_act writes.'},{name:'feature_registry — single source of truth',comp:'runtime',status:'done',dep:'observer_actions',note:'38 rows across helix/membrain/helixmaster. deploy_target field. /api/v1/features CRUD. master/status reads from DB.'},{name:'SYSTEM_INDEX.md — unified file index',comp:'memory',status:'done',dep:'feature_registry',note:'All key file paths VPS1 VPS2 Postgres GitHub URLs. Committed to git and KB indexed.'},{name:'sync_vps2 — helixmaster auto-deploy',comp:'runtime',status:'done',dep:'file_events',note:'DNS points to VPS2. file_events SCP-syncs index.html to VPS2 on every helix_file_write of helixmaster HTML.'}
+{name:'/api/v1/actions/log|signals|chains',comp:'runtime',status:'done',dep:'action_intelligence',note:'Three endpoints. Signals confirms pattern confidence. Chains shows recovery sequences. Log receives cortex_act writes.'},{name:'feature_registry single source of truth',comp:'runtime',status:'done',dep:'observer_actions',note:'38 rows across helix/membrain/helixmaster. deploy_target field. /api/v1/features CRUD.'},{name:'SYSTEM_INDEX.md unified file index',comp:'memory',status:'done',dep:'feature_registry',note:'All key file paths VPS1 VPS2 Postgres GitHub URLs. VPS2 routing documented.'},{name:'sync_vps2 helixmaster auto-deploy',comp:'runtime',status:'done',dep:'file_events',note:'DNS points to VPS2. file_events SCP-syncs index.html to VPS2 on every helix_file_write.'}
   ]},
 ];
 
@@ -398,26 +397,17 @@ function renderJournal(){
   const el=document.getElementById('jlist');
   if(!el)return;
   try{
-    el.innerHTML=jEntries.map(e=>{
-      const decs=(e.decisions||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
-      const bp=(e.build_plan||[]).filter(d=>d&&d.text).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status||'plan'}">${esc(d.status||'plan')}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
-      const tags=(e.tags||[]).map(t=>`<span class="jtag">${esc(t)}</span>`).join('');
-      return `<div class="je"><div class="jd">${esc(e.date)} — session ${esc(e.session)}</div><div class="jt">${esc(e.title)}</div><div class="jb">${esc(e.body)}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${decs||'<span style="color:var(--text-dim);font-size:11px">auto-populated</span>'}</div>${bp?`<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${bp}</div>`:''}<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${esc(e.glance)||'<span style="color:var(--text-dim)">see key decisions above</span>'}</div></div><div class="jtags">${tags}</div></div>`;
+    el.innerHTML=jEntries.map(function(e){
+      var decs=(e.decisions||[]).map(function(d){return '<div class="dec-row"><div class="dec-bdg db-'+d.status+'">'+d.status+'</div><div class="dec-txt">'+d.text+'</div></div>';}).join('');
+      var bp=(e.build_plan||[]).map(function(d){return '<div class="dec-row"><div class="dec-bdg db-'+(d.status==='next'?'next':(d.status||'plan'))+'">'+(d.status||'plan')+'</div><div class="dec-txt">'+d.text+'</div></div>';}).join('');
+      var tags=(e.tags||[]).map(function(t){return '<span class="jtag">'+t+'</span>';}).join('');
+      return '<div class="je"><div class="jd">'+(e.date||'')+' — session '+(e.session||'')+'</div><div class="jt">'+(e.title||'')+'</div><div class="jb">'+(e.body||'')+'</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">'+(decs||'<span style="color:var(--text-dim);font-size:11px">auto-populated</span>')+'</div>'+(bp?'<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">'+bp+'</div>':'')+'<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">'+(e.glance||'see key decisions above')+'</div></div><div class="jtags">'+tags+'</div></div>';
     }).join('');
   }catch(err){
-    console.error('[Journal]',err);
-    el.innerHTML='<div style="color:var(--danger);padding:20px;font-family:var(--mono);font-size:11px">Journal render error: '+esc(err.message)+'</div>';
-  }
-}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
-      const bp=(e.build_plan||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
-      const tags=(e.tags||[]).map(t=>`<span class="jtag">${esc(t)}</span>`).join('');
-      return `<div class="je"><div class="jd">${esc(e.date)} — ${esc(e.session)}</div><div class="jt">${esc(e.title)}</div><div class="jb">${esc(e.body)}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${decs||'<span style="color:var(--text-dim);font-size:11px">none recorded</span>'}</div>${bp?`<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${bp}</div>`:''}<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${esc(e.glance||'')}</div></div><div class="jtags">${tags}</div></div>`;
-    }).join('');
-  }catch(err){
-    console.error('[Journal] render error:', err.message);
-    el.innerHTML='<div style="color:var(--danger);padding:20px;font-family:var(--mono)">Journal render error: '+esc(err.message)+'</div>';
+    el.innerHTML='<div style="color:var(--danger);padding:20px">Journal error: '+err.message+'</div>';
   }
 }
+
 function switchTop(id,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.top-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
 
 renderPNav();renderPDetail();renderLayerPills();renderLayers();renderJournal();renderQuestions();renderAdrs(staticAdrs);
