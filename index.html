@@ -218,6 +218,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 .jt-docs{background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3)}
 .jt-style{background:rgba(244,208,63,.15);color:#f4d03f;border:1px solid rgba(244,208,63,.3)}
 .jt-data{background:rgba(34,211,238,.15);color:#22d3ee;border:1px solid rgba(34,211,238,.3)}
+
+.dec-fix{background:rgba(251,191,36,.12);border-left:3px solid #fbbf24;color:#fbbf24}
+.dec-feat{background:rgba(52,211,153,.12);border-left:3px solid #34d399;color:#34d399}
+.dec-arch{background:rgba(139,92,246,.12);border-left:3px solid #8b5cf6;color:#8b5cf6}
+.dec-kill{background:rgba(239,68,68,.12);border-left:3px solid #ef4444;color:#ef4444}
+.dec-infra{background:rgba(14,165,233,.12);border-left:3px solid #0ea5e9;color:#0ea5e9}
+.dec-docs{background:rgba(156,163,175,.12);border-left:3px solid #9ca3af;color:#9ca3af}
+.dec-live{background:rgba(52,211,153,.08);border-left:3px solid #34d399;color:#34d399}
 </style>
 </head>
 <body>
@@ -419,7 +427,16 @@ function renderJournal(){
   try{
     el.innerHTML=jEntries.map(function(e){
       var decs=(e.decisions||[]).map(function(d){
-        return '<div class="dec-row"><div class="dec-bdg db-'+d.status+'">'+d.status+'</div><div class="dec-txt">'+d.text+'</div></div>';
+        var t=d.text.toLowerCase();
+        var cls='dec-live';
+        var lbl=d.status||'live';
+        if(/fix|patch|correc|repair|resolv|broken|bug|revert/.test(t)){cls='dec-fix';lbl='fix';}
+        else if(/feat|add|new|build|creat|implement|wire|connect|integrat/.test(t)){cls='dec-feat';lbl='feat';}
+        else if(/arch|decision|adr|pattern|never|always|must|rule|standard/.test(t)){cls='dec-arch';lbl='arch';}
+        else if(/remov|kill|deprecat|disable|delet|stop|retire|shut/.test(t)){cls='dec-kill';lbl='kill';}
+        else if(/deploy|docker|vps|nginx|traefik|container|server|infra|sync|scp/.test(t)){cls='dec-infra';lbl='infra';}
+        else if(/doc|index|skill|journal|handoff|readme|comment/.test(t)){cls='dec-docs';lbl='docs';}
+        return '<div class="dec-row"><div class="dec-bdg '+cls+'">'+lbl+'</div><div class="dec-txt">'+d.text+'</div></div>';
       }).join('');
       var bp=(e.build_plan||[]).map(function(d){
         return '<div class="dec-row"><div class="dec-bdg db-'+(d.status==='next'?'next':(d.status||'plan'))+'">'+(d.status||'plan')+'</div><div class="dec-txt">'+d.text+'</div></div>';
