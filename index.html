@@ -224,7 +224,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 const HELIX_BASE='https://helix.millyweb.com';
 const STATUS_URL=HELIX_BASE+'/api/v1/master/status';
 
-async async function fetchLiveData(){
+async function fetchLiveData(){
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   try{
@@ -288,19 +288,19 @@ function updateAdrs(apiAdrs){ renderAdrs(apiAdrs); }
 const lastSession={date:'2026-03-22',items:['helix-mcp v2.0 deployed — single MCP surface, 33 tools, all proxy to cortex REST','Removed cortex MCP endpoint — cortex is now backend-only, helix-mcp is the only MCP surface','Fixed pg_sync/SQLite bugs in ops.py, archive.py, kb.py, knowledge.py, scheduler.py (plainto_tsquery)','Provisioner manifest updated: 47 servers, helix-workspace renamed helix, cortex entry removed','Next: build /api/v1/master/status endpoint + Observer flush fix']};
 
 const phases=[
-  {id:'p1',num:1,name:'Foundation',done:4,total:4,desc:'Fix the write layer and establish the storage contract. Nothing can be built reliably until writes are stable and versioned.',tasks:[
+  {id:'p1',num:1,name:'Foundation',done:3,total:4,desc:'Fix the write layer and establish the storage contract. Nothing can be built reliably until writes are stable and versioned.',tasks:[
     {name:'Verify helix_file_write pipeline end-to-end',comp:'storage',status:'done',dep:null,note:'helix-mcp v2.0 confirmed. All 24 tool groups tested and passing including file_write through cortex REST.'},
     {name:'Direct MinIO write utility (boto3)',comp:'storage',status:'next',dep:'verify',note:'ADR-001 decided. boto3 client, versioned bucket, used for all 5 permanent docs.'},
     {name:'5 permanent doc structure in Working KB',comp:'memory',status:'done',dep:'MinIO write',note:'handoff.md, journal.md, open-questions.md, shape-current.md, adrs/'},
     {name:'helix_file_write smoke test confirmed',comp:'storage',status:'done',dep:null,note:'Pre-Forge-fix baseline confirmed.'},
   ]},
-  {id:'p2',num:2,name:'Ingestion Automation',done:5,total:6,desc:'Make context capture automatic. Once running, no decision gets lost regardless of session close.',tasks:[
+  {id:'p2',num:2,name:'Ingestion Automation',done:6,total:8,desc:'Make context capture automatic. Once running, no decision gets lost regardless of session close.',tasks:[
     {name:'turn_processor + shard diff (per-turn)',comp:'ingestion',status:'done',dep:null,note:'Live. services/shard.py + services/diff.py.'},
     {name:'Checksum dedup + backfill',comp:'ingestion',status:'done',dep:null,note:'Live.'},
     {name:'event_bus wired',comp:'runtime',status:'done',dep:null,note:'Live.'},
     {name:'Conversation ingester cron (5min)',comp:'ingestion',status:'done',dep:'Phase 1',note:'Pure diff — compare checksums, queue new.'},
     {name:'Haiku reconciler cron (hourly)',comp:'intelligence',status:'done',dep:'ingester cron',note:'Extracts ADRs, tasks, journal entries. Patches 5 permanent docs.'},
-    {name:'Shape stub generator',comp:'intelligence',status:'planned',dep:'Haiku reconciler',note:'Detects topic clusters without shape docs.'},,
+    {name:'Shape stub generator',comp:'intelligence',status:'planned',dep:'Haiku reconciler',note:'Detects topic clusters without shape docs.'},
     {name:'Signal Intelligence — 15 unused sources audited',comp:'intelligence',status:'planned',dep:'action_intelligence',note:'Tier 1 (highest value): observer_sequences (tool chains), shard_diffs (edit patterns), exchanges.rejected_alternatives (dead ends). Tier 2: conventions, expressions, anomalies, embeddings similarity, KG relationships, KG mentions. Tier 3: observer_file_captures (hotspots), membrain_events (injection acceptance), conversations_fts scanner, observer_session_tokens. None currently wired to promoter.'},
     {name:'helix-feature-add skill — unified update pipeline',comp:'memory',status:'done',dep:'helix_file_write pipeline',note:'Skill covering all 7 touchpoints when adding any Helix feature: journal + handoff + master site + open-questions + ADR + KB index + git. Stored at /opt/projects/helix/skills/helix-feature-add/SKILL.md. Triggered by: add this to helix, mark as done, update build plan.'}
   ]},
@@ -324,11 +324,11 @@ const phases=[
     {name:'Open Questions resolution toggles',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},
     {name:'Inline doc editor',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},
   ]},
-  {id:'p5',num:5,name:'Assembler',done:4,total:4,desc:'The payoff. Pre-stage code and language scaffolds from pattern recognition across prior sessions.',tasks:[
+  {id:'p5',num:5,name:'Assembler',done:7,total:7,desc:'The payoff. Pre-stage code and language scaffolds from pattern recognition across prior sessions.',tasks:[
     {name:'cortex_act interceptor (MemBrain Phase 4)',comp:'membrain',status:'done',dep:'Phase 3+4',note:'SSE stream → detect tool_use → enrich params → release.'},
     {name:'Phrase promoter → compression symbol promotion',comp:'compression',status:'done',dep:'recurrence scoring',note:'phrase_promoter.py exists.'},
     {name:'Assembler pre-staging logic',comp:'intelligence',status:'done',dep:'recurrence + confidence',note:'assembler.py exists. Pattern match → scaffold surfaced before ask.'},
-    {name:'Spec/RFC auto-generation from ADR clusters',comp:'intelligence',status:'done',dep:'assembler',note:'3+ ADRs on one topic → haiku.py drafts Spec doc stub.'},,{name:'Action Intelligence — outcome tracking + confidence scoring',comp:'intelligence',status:'done',dep:'observer_actions schema',note:'cortex_act logs every tool call with outcome. action_intelligence.py scores patterns. phrase_promoter uses multipliers. ADR-confirmed bypasses threshold. Recovery patterns boosted. Dead-ends penalised.'},
+    {name:'Spec/RFC auto-generation from ADR clusters',comp:'intelligence',status:'done',dep:'assembler',note:'3+ ADRs on one topic → haiku.py drafts Spec doc stub.'},{name:'Action Intelligence — outcome tracking + confidence scoring',comp:'intelligence',status:'done',dep:'observer_actions schema',note:'cortex_act logs every tool call with outcome. action_intelligence.py scores patterns. phrase_promoter uses multipliers. ADR-confirmed bypasses threshold. Recovery patterns boosted. Dead-ends penalised.'},
 {name:'action_chains view — failure→success sequences',comp:'intelligence',status:'done',dep:'action_intelligence',note:'SQL view shows what failed before each working fix. Foundation for automated dead-end detection.'},
 {name:'/api/v1/actions/log|signals|chains',comp:'runtime',status:'done',dep:'action_intelligence',note:'Three endpoints. Signals confirms pattern confidence. Chains shows recovery sequences. Log receives cortex_act writes.'}
   ]},
