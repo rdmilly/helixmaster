@@ -398,10 +398,24 @@ function renderJournal(){
   if(!el)return;
   try{
     el.innerHTML=jEntries.map(function(e){
-      var decs=(e.decisions||[]).map(function(d){return '<div class="dec-row"><div class="dec-bdg db-'+d.status+'">'+d.status+'</div><div class="dec-txt">'+d.text+'</div></div>';}).join('');
-      var bp=(e.build_plan||[]).map(function(d){return '<div class="dec-row"><div class="dec-bdg db-'+(d.status==='next'?'next':(d.status||'plan'))+'">'+(d.status||'plan')+'</div><div class="dec-txt">'+d.text+'</div></div>';}).join('');
+      var decs=(e.decisions||[]).map(function(d){
+        return '<div class="dec-row"><div class="dec-bdg db-'+d.status+'">'+d.status+'</div><div class="dec-txt">'+d.text+'</div></div>';
+      }).join('');
+      var bp=(e.build_plan||[]).map(function(d){
+        return '<div class="dec-row"><div class="dec-bdg db-'+(d.status==='next'?'next':(d.status||'plan'))+'">'+(d.status||'plan')+'</div><div class="dec-txt">'+d.text+'</div></div>';
+      }).join('');
       var tags=(e.tags||[]).map(function(t){return '<span class="jtag">'+t+'</span>';}).join('');
-      return '<div class="je"><div class="jd">'+(e.date||'')+' — session '+(e.session||'')+'</div><div class="jt">'+(e.title||'')+'</div><div class="jb">'+(e.body||'')+'</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">'+(decs||'<span style="color:var(--text-dim);font-size:11px">auto-populated</span>')+'</div>'+(bp?'<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">'+bp+'</div>':'')+'<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">'+(e.glance||'see key decisions above')+'</div></div><div class="jtags">'+tags+'</div></div>';
+      var summary=e.body?'<div class="je-summary">'+e.body+'</div>':'';
+      var glance=e.glance&&e.glance.length>5?'<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">'+e.glance+'</div></div>':'';
+      return '<div class="je">'
+        +'<div class="je-meta">'+(e.date||'')+' — <span style="color:var(--text-dim)">'+(e.session||'')+'</span></div>'
+        +'<div class="je-title">'+(e.title||'(untitled)')+'</div>'
+        +summary
+        +(decs?'<div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">'+decs+'</div>':'')
+        +(bp?'<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">'+bp+'</div>':'')
+        +glance
+        +'<div class="jtags">'+tags+'</div>'
+        +'</div>';
     }).join('');
   }catch(err){
     el.innerHTML='<div style="color:var(--danger);padding:20px">Journal error: '+err.message+'</div>';
