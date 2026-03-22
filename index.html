@@ -400,6 +400,15 @@ function renderJournal(){
   try{
     el.innerHTML=jEntries.map(e=>{
       const decs=(e.decisions||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
+      const bp=(e.build_plan||[]).filter(d=>d&&d.text).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status||'plan'}">${esc(d.status||'plan')}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
+      const tags=(e.tags||[]).map(t=>`<span class="jtag">${esc(t)}</span>`).join('');
+      return `<div class="je"><div class="jd">${esc(e.date)} — session ${esc(e.session)}</div><div class="jt">${esc(e.title)}</div><div class="jb">${esc(e.body)}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${decs||'<span style="color:var(--text-dim);font-size:11px">auto-populated</span>'}</div>${bp?`<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${bp}</div>`:''}<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${esc(e.glance)||'<span style="color:var(--text-dim)">see key decisions above</span>'}</div></div><div class="jtags">${tags}</div></div>`;
+    }).join('');
+  }catch(err){
+    console.error('[Journal]',err);
+    el.innerHTML='<div style="color:var(--danger);padding:20px;font-family:var(--mono);font-size:11px">Journal render error: '+esc(err.message)+'</div>';
+  }
+}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
       const bp=(e.build_plan||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
       const tags=(e.tags||[]).map(t=>`<span class="jtag">${esc(t)}</span>`).join('');
       return `<div class="je"><div class="jd">${esc(e.date)} — ${esc(e.session)}</div><div class="jt">${esc(e.title)}</div><div class="jb">${esc(e.body)}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${decs||'<span style="color:var(--text-dim);font-size:11px">none recorded</span>'}</div>${bp?`<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${bp}</div>`:''}<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${esc(e.glance||'')}</div></div><div class="jtags">${tags}</div></div>`;
