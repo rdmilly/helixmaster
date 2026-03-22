@@ -326,7 +326,9 @@ const phases=[
     {name:'cortex_act interceptor (MemBrain Phase 4)',comp:'membrain',status:'done',dep:'Phase 3+4',note:'SSE stream → detect tool_use → enrich params → release.'},
     {name:'Phrase promoter → compression symbol promotion',comp:'compression',status:'done',dep:'recurrence scoring',note:'phrase_promoter.py exists.'},
     {name:'Assembler pre-staging logic',comp:'intelligence',status:'done',dep:'recurrence + confidence',note:'assembler.py exists. Pattern match → scaffold surfaced before ask.'},
-    {name:'Spec/RFC auto-generation from ADR clusters',comp:'intelligence',status:'done',dep:'assembler',note:'3+ ADRs on one topic → haiku.py drafts Spec doc stub.'},
+    {name:'Spec/RFC auto-generation from ADR clusters',comp:'intelligence',status:'done',dep:'assembler',note:'3+ ADRs on one topic → haiku.py drafts Spec doc stub.'},,{name:'Action Intelligence — outcome tracking + confidence scoring',comp:'intelligence',status:'done',dep:'observer_actions schema',note:'cortex_act logs every tool call with outcome. action_intelligence.py scores patterns. phrase_promoter uses multipliers. ADR-confirmed bypasses threshold. Recovery patterns boosted. Dead-ends penalised.'},
+{name:'action_chains view — failure→success sequences',comp:'intelligence',status:'done',dep:'action_intelligence',note:'SQL view shows what failed before each working fix. Foundation for automated dead-end detection.'},
+{name:'/api/v1/actions/log|signals|chains',comp:'runtime',status:'done',dep:'action_intelligence',note:'Three endpoints. Signals confirms pattern confidence. Chains shows recovery sequences. Log receives cortex_act writes.'}
   ]},
 ];
 
