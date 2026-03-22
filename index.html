@@ -444,7 +444,7 @@ function renderJournal(){
       var glance=e.glance&&e.glance.length>5?'<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">'+e.glance+'</div></div>':'';
       return '<div class="je">'
         +'<div class="je-meta">'+(e.date||'')+' — <span style="color:var(--text-dim)">'+(e.session||'')+'</span></div>'
-        +function(){var tp=jeType(e.title);return '<div class="je-type '+tp.cls+'">'+tp.label+'</div>';}()+'<div class="je-title">'+(e.title||'(untitled)')+'</div>'
+        +function(){var tp=jeType(e.title);return '<div class="je-type '+tp.cls+'">'+tp.label+'</div>';}()+('<div class="je-title" style="color:'+({feat:'#a5b4fc',arch:'#fcd34d',fix:'#fca5a5',infra:'#5eead4',rule:'#c084fc',live:'#86efac',data:'#7dd3fc'}[(e.decisions&&e.decisions[0]&&e.decisions[0].status)||'feat']||'#e2e8f0')+'">'+(e.title||'(untitled)')+'</div>')
         +summary
         +(decs?'<div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">'+decs+'</div>':'')
         +(bp?'<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">'+bp+'</div>':'')
