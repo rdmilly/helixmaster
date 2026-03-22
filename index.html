@@ -401,14 +401,13 @@ function renderJournal(){
       const decs=(e.decisions||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
       const bp=(e.build_plan||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
       const tags=(e.tags||[]).map(t=>`<span class="jtag">${esc(t)}</span>`).join('');
-      return `<div class="je"><div class="jd">${esc(e.date)} — session ${esc(e.session)}</div><div class="jt">${esc(e.title)}</div><div class="jb">${esc(e.body)}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${decs||'<span style="color:var(--text-dim);font-size:11px">none recorded</span>'}</div>${bp?`<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${bp}</div>`:''}<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${esc(e.glance)}</div></div><div class="jtags">${tags}</div></div>`;
+      return `<div class="je"><div class="jd">${esc(e.date)} — ${esc(e.session)}</div><div class="jt">${esc(e.title)}</div><div class="jb">${esc(e.body)}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${decs||'<span style="color:var(--text-dim);font-size:11px">none recorded</span>'}</div>${bp?`<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${bp}</div>`:''}<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${esc(e.glance||'')}</div></div><div class="jtags">${tags}</div></div>`;
     }).join('');
   }catch(err){
-    console.error('[Journal] render failed:', err);
-    el.innerHTML='<div style="color:var(--danger);padding:20px">Journal render error: '+err.message+'</div>';
+    console.error('[Journal] render error:', err.message);
+    el.innerHTML='<div style="color:var(--danger);padding:20px;font-family:var(--mono)">Journal render error: '+esc(err.message)+'</div>';
   }
-} — session ${e.session}</div><div class="jt">${e.title}</div><div class="jb">${e.body}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${e.decisions.map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status}">${d.status}</div><div class="dec-txt">${d.text}</div></div>`).join('')}</div><div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${e.build_plan.map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status}">${d.status}</div><div class="dec-txt">${d.text}</div></div>`).join('')}</div><div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${e.glance}</div></div><div class="jtags">${e.tags.map(t=>`<span class="jtag">${t}</span>`).join('')}</div></div>`).join('');}
-
+}
 function switchTop(id,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.top-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
 
 renderPNav();renderPDetail();renderLayerPills();renderLayers();renderJournal();renderQuestions();renderAdrs(staticAdrs);
