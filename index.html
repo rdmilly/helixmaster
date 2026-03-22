@@ -337,7 +337,7 @@ const phases=[
     {name:'Recurrence + confidence scoring',comp:'KG',status:'done',dep:'ADR chain',note:'High recurrence = scaffold candidate.'},
     {name:'Journal auto-generated via haiku.py',comp:'intelligence',status:'done',dep:'Haiku reconciler',note:'Session summaries appended automatically.'},
   ]},
-  {id:'p4',num:4,name:'Gates + Enforcement',done:9,total:10,desc:'Make the process automatic and the site genuinely useful day-to-day.',tasks:[
+  {id:'p4',num:4,name:'Gates + Enforcement',done:10,total:11,desc:'Make the process automatic and the site genuinely useful day-to-day.',tasks:[
     {name:'MemBrain Tier 1 context injection',comp:'membrain',status:'done',dep:null,note:'Live at v0.5.2.'},
     {name:'session_state gate in handoff.md + MemBrain',comp:'membrain',status:'done',dep:'Phase 2',note:'shape_required | active | closing.'},
     {name:'Journal wired into MemBrain Tier 1',comp:'membrain',status:'done',dep:'Phase 3 journal',note:'Running journal visible on every message.'},
@@ -347,15 +347,15 @@ const phases=[
     {name:'Live data pull wired to status endpoint',comp:'frontend',status:'done',dep:'/api/v1/master/status',note:'fetchLiveData() already coded — just needs the endpoint live.'},
     {name:'Cross-link Components → Roadmap phase',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},
     {name:'Open Questions resolution toggles',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},
-    {name:'Inline doc editor',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},
+    {name:'Inline doc editor',comp:'frontend',status:'done',dep:null,note:'Implemented in v5.'},{name:'Git pipeline all 3 repos',comp:'runtime',status:'done',dep:'helix_file_write',note:'rdmilly/helix + rdmilly/membrain + rdmilly/helixmaster auto-commit on every write. GitHub Actions auto-update READMEs hourly.'},
   ]},
-  {id:'p5',num:5,name:'Assembler',done:7,total:7,desc:'The payoff. Pre-stage code and language scaffolds from pattern recognition across prior sessions.',tasks:[
+  {id:'p5',num:5,name:'Assembler',done:10,total:10,desc:'The payoff. Pre-stage code and language scaffolds from pattern recognition across prior sessions.',tasks:[
     {name:'cortex_act interceptor (MemBrain Phase 4)',comp:'membrain',status:'done',dep:'Phase 3+4',note:'SSE stream → detect tool_use → enrich params → release.'},
     {name:'Phrase promoter → compression symbol promotion',comp:'compression',status:'done',dep:'recurrence scoring',note:'phrase_promoter.py exists.'},
     {name:'Assembler pre-staging logic',comp:'intelligence',status:'done',dep:'recurrence + confidence',note:'assembler.py exists. Pattern match → scaffold surfaced before ask.'},
     {name:'Spec/RFC auto-generation from ADR clusters',comp:'intelligence',status:'done',dep:'assembler',note:'3+ ADRs on one topic → haiku.py drafts Spec doc stub.'},{name:'Action Intelligence — outcome tracking + confidence scoring',comp:'intelligence',status:'done',dep:'observer_actions schema',note:'cortex_act logs every tool call with outcome. action_intelligence.py scores patterns. phrase_promoter uses multipliers. ADR-confirmed bypasses threshold. Recovery patterns boosted. Dead-ends penalised.'},
 {name:'action_chains view — failure→success sequences',comp:'intelligence',status:'done',dep:'action_intelligence',note:'SQL view shows what failed before each working fix. Foundation for automated dead-end detection.'},
-{name:'/api/v1/actions/log|signals|chains',comp:'runtime',status:'done',dep:'action_intelligence',note:'Three endpoints. Signals confirms pattern confidence. Chains shows recovery sequences. Log receives cortex_act writes.'}
+{name:'/api/v1/actions/log|signals|chains',comp:'runtime',status:'done',dep:'action_intelligence',note:'Three endpoints. Signals confirms pattern confidence. Chains shows recovery sequences. Log receives cortex_act writes.'},{name:'feature_registry — single source of truth',comp:'runtime',status:'done',dep:'observer_actions',note:'38 rows across helix/membrain/helixmaster. deploy_target field. /api/v1/features CRUD. master/status reads from DB.'},{name:'SYSTEM_INDEX.md — unified file index',comp:'memory',status:'done',dep:'feature_registry',note:'All key file paths VPS1 VPS2 Postgres GitHub URLs. Committed to git and KB indexed.'},{name:'sync_vps2 — helixmaster auto-deploy',comp:'runtime',status:'done',dep:'file_events',note:'DNS points to VPS2. file_events SCP-syncs index.html to VPS2 on every helix_file_write of helixmaster HTML.'}
   ]},
 ];
 
