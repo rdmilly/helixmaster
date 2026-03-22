@@ -231,6 +231,7 @@ async function fetchLiveData(){
     const res=await fetch(STATUS_URL,{headers:{'Accept':'application/json'}});
     if(!res.ok) throw new Error(res.status);
     const d=await res.json();
+    console.log('[HELIX] API adr_count:', d.adr_count, typeof d.adr_count, 'adrs:', Array.isArray(d.adrs), d.adrs?.length);
     document.getElementById('stat-cortex').textContent=d.cortex_uptime||'up';
     document.getElementById('stat-chunks').textContent=(d.chunks||0).toLocaleString();
     document.getElementById('stat-containers').textContent=d.containers||'?';
