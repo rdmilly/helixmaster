@@ -34,6 +34,42 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 .top-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .top-tab:hover:not(.active){color:var(--text)}
 .tab-panel{display:none}.tab-panel.active{display:block}
+.arch-layout{display:flex;height:calc(100vh - 89px);overflow:hidden}
+.arch-nav{width:224px;border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.arch-nav-header{padding:14px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase}
+.arch-nav-item{padding:11px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .15s;font-family:var(--mono);font-size:11px;color:var(--text-dim)}
+.arch-nav-item:hover{background:var(--surface2);color:var(--text)}
+.arch-nav-item.active{border-left-color:var(--accent);color:var(--accent);background:rgba(0,212,170,.05)}
+.nav-label{display:block;margin-bottom:3px}
+.nav-sub{font-size:10px;color:var(--text-dim);opacity:.65}
+.arch-nav-item.active .nav-sub{color:var(--accent);opacity:.55}
+.nav-tag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:2px;margin-left:5px;letter-spacing:.04em;vertical-align:middle}
+.tag-c4{background:rgba(59,130,246,.12);color:#3b82f6;border:1px solid rgba(59,130,246,.2)}
+.tag-flow{background:rgba(0,212,170,.08);color:#00d4aa;border:1px solid rgba(0,212,170,.18)}
+.tag-infra{background:rgba(245,158,11,.08);color:#f59e0b;border:1px solid rgba(245,158,11,.18)}
+.nav-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--text-dim);line-height:1.8}
+.nf-head{letter-spacing:.06em;margin-bottom:3px}
+.arch-main{flex:1;overflow-y:auto;padding:28px 32px}
+.diagram-header{margin-bottom:22px}
+.diagram-title{font-family:var(--mono);font-size:15px;color:var(--text-bright);font-weight:600;margin-bottom:6px}
+.diagram-desc{font-size:12px;color:var(--text-dim);line-height:1.65;max-width:660px;margin-top:4px}
+.badge-row{margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap}
+.diag-badge{display:inline-flex;align-items:center;font-family:var(--mono);font-size:9px;letter-spacing:.07em;padding:3px 8px;border-radius:2px}
+.badge-c4{background:rgba(59,130,246,.08);color:#3b82f6;border:1px solid rgba(59,130,246,.22)}
+.badge-flow{background:rgba(0,212,170,.06);color:#00d4aa;border:1px solid rgba(0,212,170,.18)}
+.badge-infra{background:rgba(245,158,11,.06);color:#f59e0b;border:1px solid rgba(245,158,11,.18)}
+.diagram-canvas{background:var(--surface);border:1px solid var(--border);border-radius:3px;overflow:hidden;width:100%}
+.diagram-canvas svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:20px;margin-top:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:var(--text-dim)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-line{width:22px;height:2px;border-radius:1px;flex-shrink:0}
+.ann-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.ann-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:13px 15px}
+.ann-label{font-family:var(--mono);font-size:9px;color:var(--accent);margin-bottom:6px;letter-spacing:.07em}
+.ann-text{font-size:11px;color:var(--text-dim);line-height:1.65}
+.diagram-page{display:none}
+.diagram-page.active{display:block}
 .roadmap-wrap{height:calc(100vh - 89px);display:grid;grid-template-columns:230px 1fr;overflow:hidden}
 .phase-nav{border-right:1px solid var(--border);overflow-y:auto;padding:16px 0;scrollbar-width:thin;scrollbar-color:var(--surface3) transparent;background:var(--surface)}
 .pn-hdr{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;padding:0 16px 10px}
@@ -228,11 +264,817 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
 <body>
 <div class="modal-overlay" id="modal"><div class="modal"><div class="modal-hdr"><div class="modal-title" id="modal-title">New document</div><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><div class="modal-field-lbl">Title</div><input class="modal-input" id="modal-doc-title" placeholder="e.g. Haiku Enrichment — Deep Spec"><div class="modal-field-lbl">Type</div><select class="modal-input" id="modal-doc-type" style="cursor:pointer"><option value="spec">◈ Spec doc</option><option value="shape">◇ Shape doc</option><option value="note">○ Session note</option><option value="report">▣ Research report</option></select><div class="modal-field-lbl">Content</div><textarea class="modal-textarea" id="modal-doc-body" rows="8" placeholder="Freeform research notes, architecture decisions, trade-off analysis..."></textarea><div class="modal-field-lbl">Linked component (optional)</div><input class="modal-input" id="modal-doc-comp" placeholder="e.g. Haiku service"></div><div class="modal-footer"><button class="modal-cancel" onclick="closeModal()">cancel</button><button class="modal-save" onclick="saveDoc()">save to KB →</button></div></div></div>
 <div class="header"><div class="logo">HELIX<span>/master</span></div><div class="hm"><div class="pulse"></div><div class="live-stat"><span>cortex</span><span class="stat-val" id="stat-cortex">checking...</span></div><span class="dv">|</span><div class="live-stat"><span>chunks</span><span class="stat-val" id="stat-chunks">...</span></div><span class="dv">|</span><div class="live-stat"><span>containers</span><span class="stat-val" id="stat-containers">...</span></div><span class="dv">|</span><div class="live-stat"><span>ADRs</span><span class="stat-val" id="stat-adrs">...</span></div><span class="dv">|</span><div class="live-stat"><div class="li-dot" id="live-dot"></div><span id="live-label">connecting</span></div><button class="refresh-btn" id="refresh-btn" onclick="fetchLiveData()"><span class="spin" id="spin-icon">↻</span> refresh</button></div></div>
-<div class="top-tabs"><div class="top-tab active" onclick="switchTop('roadmap',this)">Roadmap</div><div class="top-tab" onclick="switchTop('components',this)">Components</div><div class="top-tab" onclick="switchTop('adrs',this)">ADRs</div><div class="top-tab" onclick="switchTop('journal',this)">Journal</div><div class="top-tab" onclick="switchTop('questions',this)">Open Questions</div></div>
+<div class="top-tabs"><div class="top-tab active" onclick="switchTop('roadmap',this)">Roadmap</div><div class="top-tab" onclick="switchTop('components',this)">Components</div><div class="top-tab" onclick="switchTop('adrs',this)">ADRs</div><div class="top-tab" onclick="switchTop('journal',this)">Journal</div><div class="top-tab" onclick="switchTop('questions',this)">Open Questions</div><div class="top-tab" onclick="switchTop('architecture',this)">Architecture</div></div>
 <div id="tab-roadmap" class="tab-panel active"><div class="roadmap-wrap"><div class="phase-nav"><div class="pn-hdr">Phases</div><div id="pnav"></div></div><div class="phase-detail" id="pdetail"></div></div></div>
 <div id="tab-components" class="tab-panel"><div class="comp-wrap"><div class="comp-main"><div class="layer-pills" id="layer-pills"></div><div id="layer-list"></div></div><div class="comp-sb" id="comp-sb"><div class="comp-sb-empty"><div style="font-size:28px;opacity:.3">◈</div><div>select a component<br>to view detail</div></div></div></div></div>
 <div id="tab-adrs" class="tab-panel"><div class="lp"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div></div><button class="bp" onclick="openModal('New ADR','adr')">+ new ADR</button></div><div id="adr-list"></div><div style="height:40px"></div></div></div>
 <div id="tab-journal" class="tab-panel"><div class="journal-wrap"><div class="j-list" id="jlist"></div><div class="j-schema"><div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px">Entry schema</div><div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;font-family:var(--mono);font-size:11px"><div style="padding:6px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text-dim)">date + session</span><span style="color:var(--text)">auto</span></div><div style="padding:6px 12px;border-bottom:1px solid var(--border)"><div style="color:var(--text-dim)">body</div><div style="color:var(--text-dim);font-size:10px;margin-top:2px">3-5 sentences, reasoning not just outcome</div></div><div style="padding:6px 12px;border-bottom:1px solid var(--border)"><div style="color:var(--text-dim)">key decisions</div><div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap"><span style="font-size:10px;background:rgba(34,197,94,.1);color:var(--live);border-radius:3px;padding:1px 6px">live</span><span style="font-size:10px;background:rgba(59,130,246,.08);color:var(--accent2);border-radius:3px;padding:1px 6px">planned</span><span style="font-size:10px;background:rgba(239,68,68,.08);color:var(--danger);border-radius:3px;padding:1px 6px">blocking</span></div></div><div style="padding:6px 12px;border-bottom:1px solid var(--border)"><div style="background:rgba(245,158,11,.05);border-left:3px solid var(--warn);padding:5px 8px;border-radius:0 4px 4px 0"><span style="color:var(--warn);font-size:10px">final glance</span><div style="color:var(--text-dim);font-size:10px;margin-top:2px">amber anti-loss callout</div></div></div><div style="padding:6px 12px"><span style="color:var(--text-dim)">tags</span></div></div><div style="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--text-dim);line-height:2">Auto-populated hourly<br>by Haiku reconciler.<br><br><span style="color:var(--accent)">live?</span> badges = scan in 10s.</div></div></div></div>
+<div id="tab-architecture" class="tab-panel"><div class="arch-layout">
+  <div class="arch-nav">
+    <div class="arch-nav-header">Diagram Views</div>
+
+    <div class="arch-nav-item active" onclick="showArch('context',this)">
+      <span class="nav-label">01 — System Context <span class="nav-tag tag-c4">C4 L1</span></span>
+      <span class="nav-sub">Helix in the world</span>
+    </div>
+    <div class="arch-nav-item" onclick="showArch('container',this)">
+      <span class="nav-label">02 — Containers <span class="nav-tag tag-c4">C4 L2</span></span>
+      <span class="nav-sub">Major deployable units</span>
+    </div>
+    <div class="arch-nav-item" onclick="showArch('component',this)">
+      <span class="nav-label">03 — Components <span class="nav-tag tag-c4">C4 L3</span></span>
+      <span class="nav-sub">Inside Helix Cortex API</span>
+    </div>
+    <div class="arch-nav-item" onclick="showArch('dataflow',this)">
+      <span class="nav-label">04 — Write Pipeline <span class="nav-tag tag-flow">FLOW</span></span>
+      <span class="nav-sub">helix_file_write end-to-end</span>
+    </div>
+    <div class="arch-nav-item" onclick="showArch('superloop',this)">
+      <span class="nav-label">05 — Superloop <span class="nav-tag tag-flow">LOOP</span></span>
+      <span class="nav-sub">The AI memory cycle</span>
+    </div>
+    <div class="arch-nav-item" onclick="showArch('infra',this)">
+      <span class="nav-label">06 — Infrastructure <span class="nav-tag tag-infra">INFRA</span></span>
+      <span class="nav-sub">VPS topology</span>
+    </div>
+
+    <div class="nav-footer">
+      <div class="nf-head" style="color:var(--accent2)">C4 MODEL</div>
+      Context → Container<br>→ Component → Code<br><br>
+      <div class="nf-head" style="color:var(--accent)">4 VIEWS</div>
+      Inventory · Component<br>Flow · Loop
+    </div>
+  </div>
+
+  <div class="arch-main">
+
+    <!-- ═══════════════════════════════════
+         01 SYSTEM CONTEXT
+    ═══════════════════════════════════ -->
+    <div class="diagram-page active" id="diag-context">
+      <div class="diagram-header">
+        <div class="badge-row">
+          <span class="diag-badge badge-c4">C4 LEVEL 1</span>
+          <span class="diag-badge badge-c4">CONTEXT</span>
+        </div>
+        <div class="diagram-title">System Context — Helix in the World</div>
+        <div class="diagram-desc">Highest zoom level. Helix as a black box surrounded by external actors and systems. No internals — just what touches it and how.</div>
+      </div>
+      <div class="diagram-canvas">
+        <svg viewBox="0 0 860 500" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono',monospace">
+          <defs>
+            <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#00d4aa"/></marker>
+            <marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#3b82f6"/></marker>
+            <marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f59e0b"/></marker>
+            <marker id="a4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#22c55e"/></marker>
+            <marker id="a5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#5a6472"/></marker>
+            <filter id="glow1"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#00d4aa" flood-opacity="0.25"/></filter>
+          </defs>
+          <rect width="860" height="500" fill="#111418"/>
+          <pattern id="g1" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/></pattern>
+          <rect width="860" height="500" fill="url(#g1)"/>
+
+          <!-- HELIX CORE CENTER -->
+          <rect x="300" y="180" width="260" height="160" rx="4" fill="#0d1117" stroke="#00d4aa" stroke-width="1.5" filter="url(#glow1)"/>
+          <rect x="300" y="180" width="260" height="26" rx="4" fill="rgba(0,212,170,0.1)"/>
+          <rect x="300" y="196" width="260" height="10" fill="rgba(0,212,170,0.1)"/>
+          <text x="430" y="197" text-anchor="middle" fill="#00d4aa" font-size="9" letter-spacing="2.5">HELIX CORTEX</text>
+          <text x="430" y="222" text-anchor="middle" fill="#e8edf3" font-size="11" font-weight="500">Intelligence Platform</text>
+          <text x="430" y="242" text-anchor="middle" fill="#5a6472" font-size="9">FastAPI · FastMCP · 20 tools</text>
+          <text x="430" y="259" text-anchor="middle" fill="#5a6472" font-size="9">ChromaDB · PostgreSQL · FTS5</text>
+          <text x="430" y="276" text-anchor="middle" fill="#5a6472" font-size="9">MinIO versioning · Observer</text>
+          <text x="430" y="293" text-anchor="middle" fill="#5a6472" font-size="9">VPS1 · port 9050</text>
+          <text x="430" y="317" text-anchor="middle" fill="#3b82f6" font-size="9">helix.millyweb.com</text>
+
+          <!-- USER (top-left) -->
+          <rect x="30" y="30" width="140" height="65" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.35)" stroke-width="1"/>
+          <text x="100" y="52" text-anchor="middle" fill="#3b82f6" font-size="9" letter-spacing="1">RYAN (DEV)</text>
+          <text x="100" y="69" text-anchor="middle" fill="#c8d0db" font-size="8">Queries via claude.ai</text>
+          <text x="100" y="83" text-anchor="middle" fill="#5a6472" font-size="8">builds · reads · writes</text>
+
+          <!-- CLAUDE.AI (top-center) -->
+          <rect x="310" y="30" width="240" height="65" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <text x="430" y="52" text-anchor="middle" fill="#e8edf3" font-size="10" font-weight="600" letter-spacing="1">CLAUDE.AI</text>
+          <text x="430" y="69" text-anchor="middle" fill="#5a6472" font-size="8">LLM interface · MCP host</text>
+          <text x="430" y="83" text-anchor="middle" fill="#5a6472" font-size="8">calls Helix via Provisioned connector</text>
+
+          <!-- MEMBRAIN (right) -->
+          <rect x="680" y="140" width="160" height="105" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="760" y="162" text-anchor="middle" fill="#00d4aa" font-size="9" letter-spacing="1.5">MEMBRAIN</text>
+          <text x="760" y="179" text-anchor="middle" fill="#c8d0db" font-size="8">Chrome Extension</text>
+          <text x="760" y="196" text-anchor="middle" fill="#5a6472" font-size="8">intercepts message POST</text>
+          <text x="760" y="212" text-anchor="middle" fill="#5a6472" font-size="8">injects tier-1 context</text>
+          <text x="760" y="228" text-anchor="middle" fill="#00d4aa" font-size="7">v0.5.2 · active</text>
+
+          <!-- THE FORGE (bottom-right) -->
+          <rect x="650" y="360" width="180" height="90" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+          <text x="740" y="382" text-anchor="middle" fill="#f59e0b" font-size="9" letter-spacing="1.5">THE FORGE</text>
+          <text x="740" y="399" text-anchor="middle" fill="#c8d0db" font-size="8">File workspace + versioning</text>
+          <text x="740" y="415" text-anchor="middle" fill="#5a6472" font-size="8">MinIO · 989 atoms · 113 mols</text>
+          <text x="740" y="430" text-anchor="middle" fill="#5a6472" font-size="8">forge.millyweb.com:9095</text>
+          <text x="740" y="444" text-anchor="middle" fill="#f59e0b" font-size="7">called by helix_file_write</text>
+
+          <!-- PROVISIONER (bottom-left) -->
+          <rect x="30" y="360" width="185" height="90" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="122" y="382" text-anchor="middle" fill="#3b82f6" font-size="9" letter-spacing="1.5">PROVISIONER</text>
+          <text x="122" y="399" text-anchor="middle" fill="#c8d0db" font-size="8">MCP tool registry</text>
+          <text x="122" y="415" text-anchor="middle" fill="#5a6472" font-size="8">45 servers · 697 tools</text>
+          <text x="122" y="430" text-anchor="middle" fill="#5a6472" font-size="8">HOT / WARM / COLD tiers</text>
+          <text x="122" y="444" text-anchor="middle" fill="#3b82f6" font-size="8">mcp.millyweb.com</text>
+
+          <!-- OBSERVER (bottom-center) -->
+          <rect x="310" y="420" width="240" height="65" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.25)" stroke-width="1"/>
+          <text x="430" y="441" text-anchor="middle" fill="#22c55e" font-size="9" letter-spacing="1.5">OBSERVER</text>
+          <text x="430" y="458" text-anchor="middle" fill="#c8d0db" font-size="8">Event stream · session log</text>
+          <text x="430" y="473" text-anchor="middle" fill="#5a6472" font-size="8">Haiku reconciler cron · 3:30 UTC daily</text>
+
+          <!-- ARROWS -->
+          <path d="M170 62 Q250 40 310 55" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#a2)" opacity="0.7"/>
+          <text x="242" y="38" fill="#3b82f6" font-size="8" text-anchor="middle">sends prompt</text>
+
+          <line x1="430" y1="95" x2="430" y2="180" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#a1)"/>
+          <line x1="440" y1="180" x2="440" y2="95" stroke="#00d4aa" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#a1)" opacity="0.45"/>
+          <text x="458" y="142" fill="#00d4aa" font-size="8">MCP calls</text>
+
+          <path d="M680 192 Q610 130 550 90" stroke="#00d4aa" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#a1)" opacity="0.6"/>
+          <text x="628" y="124" fill="#00d4aa" font-size="8" text-anchor="middle">injects context</text>
+
+          <path d="M560 330 Q630 355 650 385" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#a3)" opacity="0.7"/>
+          <text x="622" y="360" fill="#f59e0b" font-size="8" text-anchor="middle">file write</text>
+
+          <line x1="430" y1="340" x2="430" y2="420" stroke="#22c55e" stroke-width="1.5" marker-end="url(#a4)" opacity="0.6"/>
+          <text x="443" y="385" fill="#22c55e" font-size="8">events</text>
+
+          <path d="M215 400 Q215 95 310 65" stroke="#3b82f6" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#a2)" opacity="0.35"/>
+
+          <text x="430" y="492" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">C4 L1 — SYSTEM CONTEXT — helix.millyweb.com</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-line" style="background:#00d4aa"></div>MCP / data</div>
+        <div class="legend-item"><div class="legend-line" style="background:#3b82f6"></div>User interaction</div>
+        <div class="legend-item"><div class="legend-line" style="background:#f59e0b"></div>File pipeline</div>
+        <div class="legend-item"><div class="legend-line" style="background:#22c55e"></div>Events</div>
+        <div class="legend-item"><div class="legend-line" style="border-top:2px dashed #00d4aa;height:0;background:none"></div>Extension layer</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         02 CONTAINERS
+    ═══════════════════════════════════ -->
+    <div class="diagram-page" id="diag-container">
+      <div class="diagram-header">
+        <div class="badge-row">
+          <span class="diag-badge badge-c4">C4 LEVEL 2</span>
+          <span class="diag-badge badge-c4">CONTAINERS</span>
+        </div>
+        <div class="diagram-title">Containers — Major Deployable Units</div>
+        <div class="diagram-desc">One zoom in. Every runnable container or service in the Helix system — what technology it uses, what port it runs on, and how they wire together.</div>
+      </div>
+      <div class="diagram-canvas">
+        <svg viewBox="0 0 860 540" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono',monospace">
+          <defs>
+            <marker id="b1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#00d4aa"/></marker>
+            <marker id="b2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#3b82f6"/></marker>
+            <marker id="b3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f59e0b"/></marker>
+            <marker id="b4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#22c55e"/></marker>
+            <marker id="b5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#5a6472"/></marker>
+          </defs>
+          <rect width="860" height="540" fill="#111418"/>
+          <pattern id="g2" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/></pattern>
+          <rect width="860" height="540" fill="url(#g2)"/>
+
+          <!-- HELIX BOUNDARY -->
+          <rect x="15" y="55" width="600" height="465" rx="4" fill="rgba(0,212,170,0.015)" stroke="rgba(0,212,170,0.15)" stroke-width="1" stroke-dasharray="6,4"/>
+          <text x="35" y="74" fill="#00d4aa" font-size="8" letter-spacing="2" opacity="0.7">HELIX CORTEX — VPS1 72.60.31.69</text>
+
+          <!-- Helix API -->
+          <rect x="35" y="85" width="270" height="130" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.45)" stroke-width="1.5"/>
+          <text x="170" y="107" text-anchor="middle" fill="#00d4aa" font-size="9" letter-spacing="1">HELIX API</text>
+          <text x="170" y="124" text-anchor="middle" fill="#c8d0db" font-size="9" font-weight="500">FastAPI · Python 3.11</text>
+          <text x="170" y="141" text-anchor="middle" fill="#5a6472" font-size="8">/mcp  StreamableHTTP · 20 tools</text>
+          <text x="170" y="157" text-anchor="middle" fill="#5a6472" font-size="8">/api/v1  REST endpoints</text>
+          <text x="170" y="173" text-anchor="middle" fill="#5a6472" font-size="8">routers: kb · exchange · write · intel</text>
+          <text x="170" y="189" text-anchor="middle" fill="#3b82f6" font-size="8">helix-cortex container · :9050</text>
+          <text x="170" y="205" text-anchor="middle" fill="#22c55e" font-size="7">● running</text>
+
+          <!-- The Forge -->
+          <rect x="330" y="85" width="265" height="130" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.4)" stroke-width="1.5"/>
+          <text x="462" y="107" text-anchor="middle" fill="#f59e0b" font-size="9" letter-spacing="1">THE FORGE</text>
+          <text x="462" y="124" text-anchor="middle" fill="#c8d0db" font-size="9" font-weight="500">FastAPI · file workspace</text>
+          <text x="462" y="141" text-anchor="middle" fill="#5a6472" font-size="8">CRUD · MinIO versioning</text>
+          <text x="462" y="157" text-anchor="middle" fill="#5a6472" font-size="8">atom scanner (989 atoms)</text>
+          <text x="462" y="173" text-anchor="middle" fill="#5a6472" font-size="8">molecule catalog (113 mols)</text>
+          <text x="462" y="189" text-anchor="middle" fill="#3b82f6" font-size="8">the-forge container · :9095</text>
+          <text x="462" y="205" text-anchor="middle" fill="#22c55e" font-size="7">● running</text>
+
+          <!-- Storage row -->
+          <text x="315" y="255" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">STORAGE ENGINES</text>
+
+          <rect x="35" y="265" width="130" height="95" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="100" y="286" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">CHROMADB</text>
+          <text x="100" y="303" text-anchor="middle" fill="#c8d0db" font-size="8">Vector search</text>
+          <text x="100" y="319" text-anchor="middle" fill="#5a6472" font-size="7">semantic similarity</text>
+          <text x="100" y="334" text-anchor="middle" fill="#5a6472" font-size="7">conversation chunks</text>
+          <text x="100" y="349" text-anchor="middle" fill="#3b82f6" font-size="7">:8000</text>
+
+          <rect x="185" y="265" width="130" height="95" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="250" y="286" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">POSTGRESQL</text>
+          <text x="250" y="303" text-anchor="middle" fill="#c8d0db" font-size="8">Relational store</text>
+          <text x="250" y="319" text-anchor="middle" fill="#5a6472" font-size="7">KB docs · ADRs</text>
+          <text x="250" y="334" text-anchor="middle" fill="#5a6472" font-size="7">KG entities + edges</text>
+          <text x="250" y="349" text-anchor="middle" fill="#3b82f6" font-size="7">:5432</text>
+
+          <rect x="335" y="265" width="130" height="95" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+          <text x="400" y="286" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">FTS5 / SQLITE</text>
+          <text x="400" y="303" text-anchor="middle" fill="#c8d0db" font-size="8">Full-text search</text>
+          <text x="400" y="319" text-anchor="middle" fill="#5a6472" font-size="7">keyword queries</text>
+          <text x="400" y="334" text-anchor="middle" fill="#5a6472" font-size="7">helix.db file</text>
+          <text x="400" y="349" text-anchor="middle" fill="#3b82f6" font-size="7">embedded</text>
+
+          <rect x="485" y="265" width="110" height="95" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+          <text x="540" y="286" text-anchor="middle" fill="#f59e0b" font-size="8" letter-spacing="1">MINIO</text>
+          <text x="540" y="303" text-anchor="middle" fill="#c8d0db" font-size="8">Object store</text>
+          <text x="540" y="319" text-anchor="middle" fill="#5a6472" font-size="7">file versions</text>
+          <text x="540" y="334" text-anchor="middle" fill="#5a6472" font-size="7">S3-compatible</text>
+          <text x="540" y="349" text-anchor="middle" fill="#f59e0b" font-size="7">:9000/:9001</text>
+
+          <!-- Observer + Haiku -->
+          <rect x="35" y="385" width="565" height="115" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.25)" stroke-width="1"/>
+          <text x="317" y="406" text-anchor="middle" fill="#22c55e" font-size="9" letter-spacing="1">OBSERVER + HAIKU RECONCILER</text>
+          <text x="317" y="423" text-anchor="middle" fill="#c8d0db" font-size="8">Captures all tool call events → SQLite event log</text>
+          <text x="317" y="440" text-anchor="middle" fill="#5a6472" font-size="8">Haiku reconciler cron (3:30 UTC): reads conversations → extracts decisions → writes files → KB indexed</text>
+          <text x="317" y="457" text-anchor="middle" fill="#5a6472" font-size="8">Closes the loop: conversation content → searchable KB without manual writes</text>
+          <text x="317" y="476" text-anchor="middle" fill="#22c55e" font-size="7">● running · cron active</text>
+
+          <!-- EXTERNAL -->
+          <rect x="640" y="55" width="205" height="100" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="742" y="76" text-anchor="middle" fill="#3b82f6" font-size="9" letter-spacing="1">PROVISIONER</text>
+          <text x="742" y="93" text-anchor="middle" fill="#c8d0db" font-size="8">MCP registry · VPS2</text>
+          <text x="742" y="110" text-anchor="middle" fill="#5a6472" font-size="8">45 servers · 697 tools</text>
+          <text x="742" y="126" text-anchor="middle" fill="#5a6472" font-size="8">routes tool calls to Helix</text>
+          <text x="742" y="143" text-anchor="middle" fill="#3b82f6" font-size="7">mcp.millyweb.com</text>
+
+          <rect x="640" y="175" width="205" height="80" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="742" y="196" text-anchor="middle" fill="#e8edf3" font-size="9" letter-spacing="1">CLAUDE.AI</text>
+          <text x="742" y="213" text-anchor="middle" fill="#5a6472" font-size="8">LLM · MCP host</text>
+          <text x="742" y="229" text-anchor="middle" fill="#5a6472" font-size="8">calls tools via Provisioner</text>
+          <text x="742" y="245" text-anchor="middle" fill="#5a6472" font-size="7">anthropic.com</text>
+
+          <!-- ARROWS -->
+          <path d="M640 105 Q500 150 305 150" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#b2)" opacity="0.6"/>
+          <text x="490" y="140" text-anchor="middle" fill="#3b82f6" font-size="8">routes tool calls · :9050</text>
+          <line x1="170" y1="215" x2="100" y2="265" stroke="#3b82f6" stroke-width="1" marker-end="url(#b2)" opacity="0.5"/>
+          <line x1="180" y1="215" x2="250" y2="265" stroke="#3b82f6" stroke-width="1" marker-end="url(#b2)" opacity="0.5"/>
+          <line x1="185" y1="215" x2="400" y2="265" stroke="#3b82f6" stroke-width="1" marker-end="url(#b2)" opacity="0.4"/>
+          <line x1="305" y1="150" x2="462" y2="85" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#b3)" opacity="0.6"/>
+          <text x="388" y="106" fill="#f59e0b" font-size="8" text-anchor="middle">helix_file_write calls Forge</text>
+          <line x1="462" y1="215" x2="540" y2="265" stroke="#f59e0b" stroke-width="1" marker-end="url(#b3)" opacity="0.5"/>
+          <line x1="170" y1="215" x2="170" y2="385" stroke="#22c55e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#b4)" opacity="0.45"/>
+
+          <text x="430" y="525" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">C4 L2 — CONTAINERS — 27 total containers on VPS1+VPS2</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         03 COMPONENTS
+    ═══════════════════════════════════ -->
+    <div class="diagram-page" id="diag-component">
+      <div class="diagram-header">
+        <div class="badge-row">
+          <span class="diag-badge badge-c4">C4 LEVEL 3</span>
+          <span class="diag-badge badge-c4">COMPONENTS</span>
+        </div>
+        <div class="diagram-title">Components — Inside Helix Cortex API</div>
+        <div class="diagram-desc">Zooms into the FastAPI application itself. Every router, service layer, and how they delegate down to storage. This is what developers integrate against.</div>
+      </div>
+      <div class="diagram-canvas">
+        <svg viewBox="0 0 860 500" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono',monospace">
+          <defs>
+            <marker id="c1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#00d4aa"/></marker>
+            <marker id="c2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#3b82f6"/></marker>
+            <marker id="c3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f59e0b"/></marker>
+            <marker id="c4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#22c55e"/></marker>
+            <marker id="c5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#5a6472"/></marker>
+          </defs>
+          <rect width="860" height="500" fill="#111418"/>
+          <pattern id="g3" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/></pattern>
+          <rect width="860" height="500" fill="url(#g3)"/>
+
+          <!-- MCP Entry -->
+          <rect x="310" y="18" width="240" height="46" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.55)" stroke-width="1.5"/>
+          <text x="430" y="38" text-anchor="middle" fill="#00d4aa" font-size="10" letter-spacing="1">/mcp ENDPOINT</text>
+          <text x="430" y="54" text-anchor="middle" fill="#5a6472" font-size="8">StreamableHTTP · FastMCP · 20 registered tools</text>
+
+          <!-- ROUTER LAYER label -->
+          <text x="430" y="90" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2.5">ROUTER LAYER</text>
+          <line x1="80" y1="94" x2="350" y2="94" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <line x1="510" y1="94" x2="780" y2="94" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+          <!-- 5 Router boxes -->
+          <rect x="18" y="100" width="138" height="70" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.3)" stroke-width="1"/>
+          <text x="87" y="122" text-anchor="middle" fill="#00d4aa" font-size="8" letter-spacing="1">SEARCH</text>
+          <text x="87" y="139" text-anchor="middle" fill="#5a6472" font-size="8">conv · kb · workdocs</text>
+          <text x="87" y="155" text-anchor="middle" fill="#5a6472" font-size="8">entity · exchange</text>
+
+          <rect x="175" y="100" width="138" height="70" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.3)" stroke-width="1"/>
+          <text x="244" y="122" text-anchor="middle" fill="#00d4aa" font-size="8" letter-spacing="1">READ</text>
+          <text x="244" y="139" text-anchor="middle" fill="#5a6472" font-size="8">helix_file_read</text>
+          <text x="244" y="155" text-anchor="middle" fill="#5a6472" font-size="8">workspace_read</text>
+
+          <rect x="332" y="100" width="138" height="70" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.5)" stroke-width="2"/>
+          <text x="401" y="122" text-anchor="middle" fill="#00d4aa" font-size="8" letter-spacing="1">WRITE ★</text>
+          <text x="401" y="139" text-anchor="middle" fill="#c8d0db" font-size="8">helix_file_write</text>
+          <text x="401" y="155" text-anchor="middle" fill="#5a6472" font-size="8">full pipeline (6 steps)</text>
+
+          <rect x="489" y="100" width="138" height="70" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.3)" stroke-width="1"/>
+          <text x="558" y="122" text-anchor="middle" fill="#00d4aa" font-size="8" letter-spacing="1">INTELLIGENCE</text>
+          <text x="558" y="139" text-anchor="middle" fill="#5a6472" font-size="8">archive_record</text>
+          <text x="558" y="155" text-anchor="middle" fill="#5a6472" font-size="8">entity · relationship</text>
+
+          <rect x="646" y="100" width="196" height="70" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.3)" stroke-width="1"/>
+          <text x="744" y="122" text-anchor="middle" fill="#00d4aa" font-size="8" letter-spacing="1">EXCHANGE</text>
+          <text x="744" y="139" text-anchor="middle" fill="#5a6472" font-size="8">exchange_post · search</text>
+          <text x="744" y="155" text-anchor="middle" fill="#5a6472" font-size="8">session log · retrieval</text>
+
+          <!-- SERVICE LAYER label -->
+          <text x="430" y="210" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2.5">SERVICE LAYER</text>
+
+          <rect x="30" y="220" width="170" height="80" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="115" y="241" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">SEARCH SVC</text>
+          <text x="115" y="258" text-anchor="middle" fill="#5a6472" font-size="8">Chroma semantic query</text>
+          <text x="115" y="274" text-anchor="middle" fill="#5a6472" font-size="8">FTS5 keyword query</text>
+          <text x="115" y="290" text-anchor="middle" fill="#5a6472" font-size="8">result fusion + ranking</text>
+
+          <rect x="220" y="220" width="170" height="80" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="305" y="241" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">KG SERVICE</text>
+          <text x="305" y="258" text-anchor="middle" fill="#5a6472" font-size="8">entity_upsert</text>
+          <text x="305" y="274" text-anchor="middle" fill="#5a6472" font-size="8">relationship_create</text>
+          <text x="305" y="290" text-anchor="middle" fill="#5a6472" font-size="8">graph traversal</text>
+
+          <rect x="410" y="220" width="170" height="80" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+          <text x="495" y="241" text-anchor="middle" fill="#f59e0b" font-size="8" letter-spacing="1">FORGE CLIENT</text>
+          <text x="495" y="258" text-anchor="middle" fill="#5a6472" font-size="8">workspace_write (→ Forge)</text>
+          <text x="495" y="274" text-anchor="middle" fill="#5a6472" font-size="8">MinIO version trigger</text>
+          <text x="495" y="290" text-anchor="middle" fill="#5a6472" font-size="8">atom scan trigger</text>
+
+          <rect x="600" y="220" width="240" height="80" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.25)" stroke-width="1"/>
+          <text x="720" y="241" text-anchor="middle" fill="#22c55e" font-size="8" letter-spacing="1">OBSERVER CLIENT</text>
+          <text x="720" y="258" text-anchor="middle" fill="#5a6472" font-size="8">event POST on every write</text>
+          <text x="720" y="274" text-anchor="middle" fill="#5a6472" font-size="8">tool call logging</text>
+          <text x="720" y="290" text-anchor="middle" fill="#5a6472" font-size="8">session tagging + metadata</text>
+
+          <!-- STORAGE label -->
+          <text x="430" y="340" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2.5">STORAGE LAYER</text>
+
+          <rect x="30" y="350" width="120" height="55" rx="2" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.2)" stroke-width="1"/>
+          <text x="90" y="372" text-anchor="middle" fill="#3b82f6" font-size="8">ChromaDB</text>
+          <text x="90" y="389" text-anchor="middle" fill="#5a6472" font-size="7">vector · :8000</text>
+
+          <rect x="165" y="350" width="120" height="55" rx="2" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.2)" stroke-width="1"/>
+          <text x="225" y="372" text-anchor="middle" fill="#3b82f6" font-size="8">PostgreSQL</text>
+          <text x="225" y="389" text-anchor="middle" fill="#5a6472" font-size="7">relational · :5432</text>
+
+          <rect x="300" y="350" width="120" height="55" rx="2" fill="rgba(59,130,246,0.05)" stroke="rgba(59,130,246,0.2)" stroke-width="1"/>
+          <text x="360" y="372" text-anchor="middle" fill="#3b82f6" font-size="8">FTS5 / SQLite</text>
+          <text x="360" y="389" text-anchor="middle" fill="#5a6472" font-size="7">helix.db · embedded</text>
+
+          <rect x="435" y="350" width="120" height="55" rx="2" fill="rgba(245,158,11,0.05)" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
+          <text x="495" y="372" text-anchor="middle" fill="#f59e0b" font-size="8">MinIO</text>
+          <text x="495" y="389" text-anchor="middle" fill="#5a6472" font-size="7">objects · :9000</text>
+
+          <rect x="570" y="350" width="120" height="55" rx="2" fill="rgba(34,197,94,0.05)" stroke="rgba(34,197,94,0.18)" stroke-width="1"/>
+          <text x="630" y="372" text-anchor="middle" fill="#22c55e" font-size="8">Observer DB</text>
+          <text x="630" y="389" text-anchor="middle" fill="#5a6472" font-size="7">events · sessions</text>
+
+          <rect x="705" y="350" width="130" height="55" rx="2" fill="rgba(245,158,11,0.05)" stroke="rgba(245,158,11,0.15)" stroke-width="1"/>
+          <text x="770" y="372" text-anchor="middle" fill="#f59e0b" font-size="8">Forge Workspace</text>
+          <text x="770" y="389" text-anchor="middle" fill="#5a6472" font-size="7">files · patterns</text>
+
+          <!-- ARROWS: /mcp → routers -->
+          <line x1="385" y1="64" x2="87" y2="100" stroke="#00d4aa" stroke-width="1" marker-end="url(#c1)" opacity="0.45"/>
+          <line x1="400" y1="64" x2="244" y2="100" stroke="#00d4aa" stroke-width="1" marker-end="url(#c1)" opacity="0.45"/>
+          <line x1="430" y1="64" x2="401" y2="100" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#c1)" opacity="0.7"/>
+          <line x1="460" y1="64" x2="558" y2="100" stroke="#00d4aa" stroke-width="1" marker-end="url(#c1)" opacity="0.45"/>
+          <line x1="475" y1="64" x2="744" y2="100" stroke="#00d4aa" stroke-width="1" marker-end="url(#c1)" opacity="0.45"/>
+
+          <!-- Routers → services -->
+          <line x1="87" y1="170" x2="115" y2="220" stroke="#3b82f6" stroke-width="1" marker-end="url(#c2)" opacity="0.4"/>
+          <line x1="401" y1="170" x2="495" y2="220" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#c3)" opacity="0.55"/>
+          <line x1="558" y1="170" x2="305" y2="220" stroke="#3b82f6" stroke-width="1" marker-end="url(#c2)" opacity="0.4"/>
+          <line x1="744" y1="170" x2="720" y2="220" stroke="#22c55e" stroke-width="1" marker-end="url(#c4)" opacity="0.4"/>
+
+          <!-- Services → storage -->
+          <line x1="115" y1="300" x2="90" y2="350" stroke="#3b82f6" stroke-width="1" marker-end="url(#c2)" opacity="0.35"/>
+          <line x1="125" y1="300" x2="225" y2="350" stroke="#3b82f6" stroke-width="1" marker-end="url(#c2)" opacity="0.35"/>
+          <line x1="305" y1="300" x2="305" y2="350" stroke="#3b82f6" stroke-width="1" marker-end="url(#c2)" opacity="0.35"/>
+          <line x1="495" y1="300" x2="360" y2="350" stroke="#3b82f6" stroke-width="1" marker-end="url(#c2)" opacity="0.3"/>
+          <line x1="495" y1="300" x2="495" y2="350" stroke="#f59e0b" stroke-width="1" marker-end="url(#c3)" opacity="0.35"/>
+          <line x1="495" y1="300" x2="770" y2="350" stroke="#f59e0b" stroke-width="1" marker-end="url(#c3)" opacity="0.3"/>
+          <line x1="720" y1="300" x2="630" y2="350" stroke="#22c55e" stroke-width="1" marker-end="url(#c4)" opacity="0.35"/>
+
+          <text x="430" y="484" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">C4 L3 — HELIX CORTEX API INTERNAL COMPONENTS</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>Entry / routers</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Search / KG services</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Write / Forge</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Observer / events</div>
+        <div class="legend-item">★ = primary write entrypoint</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         04 WRITE PIPELINE (FLOW)
+    ═══════════════════════════════════ -->
+    <div class="diagram-page" id="diag-dataflow">
+      <div class="diagram-header">
+        <div class="badge-row">
+          <span class="diag-badge badge-flow">FLOW VIEW</span>
+          <span class="diag-badge badge-flow">WRITE PIPELINE</span>
+        </div>
+        <div class="diagram-title">Data Flow — helix_file_write Unified Pipeline</div>
+        <div class="diagram-desc">What happens every time a file is written through Helix. Six atomic steps in sequence. This single tool call is what makes files searchable, versioned, and part of the knowledge graph.</div>
+      </div>
+      <div class="diagram-canvas">
+        <svg viewBox="0 0 860 450" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono',monospace">
+          <defs>
+            <marker id="d1" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L0,7 L9,3.5z" fill="#00d4aa"/></marker>
+            <marker id="d2" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L0,7 L9,3.5z" fill="#f59e0b"/></marker>
+            <marker id="d3" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L0,7 L9,3.5z" fill="#3b82f6"/></marker>
+          </defs>
+          <rect width="860" height="450" fill="#111418"/>
+          <pattern id="g4" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/></pattern>
+          <rect width="860" height="450" fill="url(#g4)"/>
+
+          <text x="430" y="26" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="3">UNIFIED WRITE PIPELINE — helix_file_write — 6 ATOMIC STEPS</text>
+
+          <!-- STEP BOXES (horizontal) -->
+          <!-- Step 1 CALL -->
+          <rect x="15" y="42" width="125" height="86" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.55)" stroke-width="2"/>
+          <text x="77" y="66" text-anchor="middle" fill="#00d4aa" font-size="9" font-weight="600">① CALL</text>
+          <text x="77" y="83" text-anchor="middle" fill="#c8d0db" font-size="8">helix_file_write</text>
+          <text x="77" y="99" text-anchor="middle" fill="#5a6472" font-size="7">path + content args</text>
+          <text x="77" y="115" text-anchor="middle" fill="#5a6472" font-size="7">via MCP tool</text>
+
+          <line x1="140" y1="85" x2="158" y2="85" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#d1)"/>
+
+          <!-- Step 2 WRITE -->
+          <rect x="158" y="42" width="125" height="86" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.4)" stroke-width="1.5"/>
+          <text x="220" y="66" text-anchor="middle" fill="#00d4aa" font-size="9">② WRITE</text>
+          <text x="220" y="83" text-anchor="middle" fill="#c8d0db" font-size="8">Disk write</text>
+          <text x="220" y="99" text-anchor="middle" fill="#5a6472" font-size="7">/opt/projects/ VPS1</text>
+          <text x="220" y="115" text-anchor="middle" fill="#5a6472" font-size="7">SHA256 computed</text>
+
+          <line x1="283" y1="85" x2="301" y2="85" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#d1)"/>
+
+          <!-- Step 3 VERSION -->
+          <rect x="301" y="42" width="125" height="86" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
+          <text x="363" y="66" text-anchor="middle" fill="#f59e0b" font-size="9">③ VERSION</text>
+          <text x="363" y="83" text-anchor="middle" fill="#c8d0db" font-size="8">Forge → MinIO</text>
+          <text x="363" y="99" text-anchor="middle" fill="#5a6472" font-size="7">snapshot stored</text>
+          <text x="363" y="115" text-anchor="middle" fill="#5a6472" font-size="7">S3 key + timestamp</text>
+
+          <line x1="426" y1="85" x2="444" y2="85" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#d1)"/>
+
+          <!-- Step 4 SCAN -->
+          <rect x="444" y="42" width="125" height="86" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
+          <text x="506" y="66" text-anchor="middle" fill="#f59e0b" font-size="9">④ SCAN</text>
+          <text x="506" y="83" text-anchor="middle" fill="#c8d0db" font-size="8">Atom scanner</text>
+          <text x="506" y="99" text-anchor="middle" fill="#5a6472" font-size="7">pattern matching</text>
+          <text x="506" y="115" text-anchor="middle" fill="#5a6472" font-size="7">molecule detection</text>
+
+          <line x1="569" y1="85" x2="587" y2="85" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#d1)"/>
+
+          <!-- Step 5 INDEX -->
+          <rect x="587" y="42" width="125" height="86" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.45)" stroke-width="1.5"/>
+          <text x="649" y="66" text-anchor="middle" fill="#3b82f6" font-size="9">⑤ INDEX</text>
+          <text x="649" y="83" text-anchor="middle" fill="#c8d0db" font-size="8">KB indexing</text>
+          <text x="649" y="99" text-anchor="middle" fill="#5a6472" font-size="7">FTS5 + ChromaDB</text>
+          <text x="649" y="115" text-anchor="middle" fill="#5a6472" font-size="7">now searchable</text>
+
+          <line x1="712" y1="85" x2="730" y2="85" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#d1)"/>
+
+          <!-- Step 6 KG+NOTIFY -->
+          <rect x="730" y="42" width="115" height="86" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.45)" stroke-width="1.5"/>
+          <text x="787" y="61" text-anchor="middle" fill="#3b82f6" font-size="9">⑥ KG + NOTIFY</text>
+          <text x="787" y="78" text-anchor="middle" fill="#c8d0db" font-size="8">Entity extract</text>
+          <text x="787" y="95" text-anchor="middle" fill="#5a6472" font-size="7">PostgreSQL KG write</text>
+          <text x="787" y="111" text-anchor="middle" fill="#5a6472" font-size="7">Observer event POST</text>
+
+          <!-- ARTIFACTS ROW -->
+          <text x="430" y="165" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2.5">ARTIFACT PRODUCED PER STEP</text>
+
+          <rect x="15" y="175" width="125" height="55" rx="2" fill="rgba(0,212,170,0.03)" stroke="rgba(0,212,170,0.12)" stroke-width="1"/>
+          <text x="77" y="196" text-anchor="middle" fill="#5a6472" font-size="7">INPUT</text>
+          <text x="77" y="212" text-anchor="middle" fill="#c8d0db" font-size="8">path + content</text>
+
+          <rect x="158" y="175" width="125" height="55" rx="2" fill="rgba(0,212,170,0.03)" stroke="rgba(0,212,170,0.12)" stroke-width="1"/>
+          <text x="220" y="196" text-anchor="middle" fill="#5a6472" font-size="7">PRODUCES</text>
+          <text x="220" y="212" text-anchor="middle" fill="#c8d0db" font-size="8">file on disk</text>
+          <text x="220" y="226" text-anchor="middle" fill="#5a6472" font-size="7">SHA256 hash</text>
+
+          <rect x="301" y="175" width="125" height="55" rx="2" fill="rgba(245,158,11,0.03)" stroke="rgba(245,158,11,0.12)" stroke-width="1"/>
+          <text x="363" y="196" text-anchor="middle" fill="#5a6472" font-size="7">PRODUCES</text>
+          <text x="363" y="212" text-anchor="middle" fill="#c8d0db" font-size="8">MinIO object</text>
+          <text x="363" y="226" text-anchor="middle" fill="#5a6472" font-size="7">version key + ts</text>
+
+          <rect x="444" y="175" width="125" height="55" rx="2" fill="rgba(245,158,11,0.03)" stroke="rgba(245,158,11,0.12)" stroke-width="1"/>
+          <text x="506" y="196" text-anchor="middle" fill="#5a6472" font-size="7">PRODUCES</text>
+          <text x="506" y="212" text-anchor="middle" fill="#c8d0db" font-size="8">atom matches[]</text>
+          <text x="506" y="226" text-anchor="middle" fill="#5a6472" font-size="7">molecule tags[]</text>
+
+          <rect x="587" y="175" width="125" height="55" rx="2" fill="rgba(59,130,246,0.03)" stroke="rgba(59,130,246,0.12)" stroke-width="1"/>
+          <text x="649" y="196" text-anchor="middle" fill="#5a6472" font-size="7">PRODUCES</text>
+          <text x="649" y="212" text-anchor="middle" fill="#c8d0db" font-size="8">FTS5 row</text>
+          <text x="649" y="226" text-anchor="middle" fill="#5a6472" font-size="7">Chroma embedding</text>
+
+          <rect x="730" y="175" width="115" height="55" rx="2" fill="rgba(59,130,246,0.03)" stroke="rgba(59,130,246,0.12)" stroke-width="1"/>
+          <text x="787" y="196" text-anchor="middle" fill="#5a6472" font-size="7">PRODUCES</text>
+          <text x="787" y="212" text-anchor="middle" fill="#c8d0db" font-size="8">KG nodes + edges</text>
+          <text x="787" y="226" text-anchor="middle" fill="#5a6472" font-size="7">observer event</text>
+
+          <!-- ANNOTATION CARDS -->
+          <rect x="15" y="260" width="260" height="100" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.06)"/>
+          <text x="30" y="280" fill="#00d4aa" font-size="8" letter-spacing="1">WHY ONE CALL DOES EVERYTHING</text>
+          <text x="30" y="298" fill="#5a6472" font-size="8">helix_file_write is the single pipeline entry point.</text>
+          <text x="30" y="314" fill="#5a6472" font-size="8">All 6 steps run atomically on every write.</text>
+          <text x="30" y="330" fill="#5a6472" font-size="8">workspace_write (deprecated) skips steps 4–6.</text>
+          <text x="30" y="346" fill="#ef4444" font-size="8">Never use ssh_write_file — bypasses everything.</text>
+
+          <rect x="295" y="260" width="265" height="100" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.06)"/>
+          <text x="310" y="280" fill="#f59e0b" font-size="8" letter-spacing="1">FORGE'S ROLE (STEPS 3-4)</text>
+          <text x="310" y="298" fill="#5a6472" font-size="8">Helix calls Forge for step 3 (version to MinIO).</text>
+          <text x="310" y="314" fill="#5a6472" font-size="8">Forge immediately triggers atom scan (step 4).</text>
+          <text x="310" y="330" fill="#5a6472" font-size="8">989 known atoms · 113 molecules in catalog.</text>
+          <text x="310" y="346" fill="#5a6472" font-size="8">forge.millyweb.com:9095</text>
+
+          <rect x="580" y="260" width="265" height="100" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.06)"/>
+          <text x="595" y="280" fill="#3b82f6" font-size="8" letter-spacing="1">HOW MEMORY IS BUILT</text>
+          <text x="595" y="298" fill="#5a6472" font-size="8">After step 6, content lives in 3 search engines:</text>
+          <text x="595" y="314" fill="#5a6472" font-size="8">ChromaDB (semantic) · FTS5 (keyword) · KG (graph).</text>
+          <text x="595" y="330" fill="#5a6472" font-size="8">Next session Claude retrieves it via helix_search_*.</text>
+          <text x="595" y="346" fill="#5a6472" font-size="8">This is how Helix builds persistent long-term memory.</text>
+
+          <text x="430" y="430" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">FLOW VIEW — helix_file_write · 6 STEPS · ATOMIC · VPS1</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         05 SUPERLOOP
+    ═══════════════════════════════════ -->
+    <div class="diagram-page" id="diag-superloop">
+      <div class="diagram-header">
+        <div class="badge-row">
+          <span class="diag-badge badge-flow">LOOP VIEW</span>
+          <span class="diag-badge badge-flow">SUPERLOOP</span>
+        </div>
+        <div class="diagram-title">Superloop — The AI Memory Cycle</div>
+        <div class="diagram-desc">The temporal loop that makes Helix self-improving. Each session's output becomes the next session's input. MemBrain closes the loop at the Claude.ai layer. The system gets smarter by existing.</div>
+      </div>
+      <div class="diagram-canvas">
+        <svg viewBox="0 0 860 490" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono',monospace">
+          <defs>
+            <marker id="sl1" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4z" fill="#00d4aa"/></marker>
+            <marker id="sl2" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4z" fill="#3b82f6"/></marker>
+            <marker id="sl3" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4z" fill="#22c55e"/></marker>
+            <marker id="sl4" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4z" fill="#f59e0b"/></marker>
+          </defs>
+          <rect width="860" height="490" fill="#111418"/>
+          <pattern id="g5" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/></pattern>
+          <rect width="860" height="490" fill="url(#g5)"/>
+          <text x="430" y="26" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="3">THE SUPERLOOP — HELIX MEMORY CYCLE — 7 PHASES · CONTINUOUS</text>
+
+          <!-- Loop ring -->
+          <circle cx="430" cy="250" r="160" fill="none" stroke="rgba(0,212,170,0.05)" stroke-width="36"/>
+          <circle cx="430" cy="250" r="160" fill="none" stroke="rgba(0,212,170,0.1)" stroke-width="1.5"/>
+
+          <!-- PHASE 1: USER MESSAGE (top) -->
+          <rect x="310" y="46" width="240" height="72" rx="4" fill="#1a1f26" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+          <text x="430" y="70" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600" letter-spacing="1">① USER SENDS MESSAGE</text>
+          <text x="430" y="87" text-anchor="middle" fill="#c8d0db" font-size="8">New claude.ai tab opened</text>
+          <text x="430" y="103" text-anchor="middle" fill="#5a6472" font-size="7">MemBrain intercepts before POST fires</text>
+
+          <!-- PHASE 2: MEMBRAIN INJECTS (top-right) -->
+          <rect x="643" y="118" width="200" height="72" rx="4" fill="#1a1f26" stroke="rgba(0,212,170,0.4)" stroke-width="1.5"/>
+          <text x="743" y="142" text-anchor="middle" fill="#00d4aa" font-size="9" font-weight="600" letter-spacing="1">② MEMBRAIN INJECTS</text>
+          <text x="743" y="159" text-anchor="middle" fill="#c8d0db" font-size="8">Tier-1 context prepended</text>
+          <text x="743" y="175" text-anchor="middle" fill="#5a6472" font-size="7">recent sessions · active projects</text>
+
+          <!-- PHASE 3: CLAUDE ACTS (right) -->
+          <rect x="672" y="255" width="175" height="72" rx="4" fill="#1a1f26" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+          <text x="759" y="279" text-anchor="middle" fill="#e8edf3" font-size="9" font-weight="600" letter-spacing="1">③ CLAUDE ACTS</text>
+          <text x="759" y="296" text-anchor="middle" fill="#c8d0db" font-size="8">Calls Helix MCP tools</text>
+          <text x="759" y="312" text-anchor="middle" fill="#5a6472" font-size="7">search · read · write · intel</text>
+
+          <!-- PHASE 4: HELIX WRITES (bottom-right) -->
+          <rect x="585" y="382" width="250" height="72" rx="4" fill="#1a1f26" stroke="rgba(245,158,11,0.4)" stroke-width="1.5"/>
+          <text x="710" y="406" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="600" letter-spacing="1">④ HELIX WRITES</text>
+          <text x="710" y="423" text-anchor="middle" fill="#c8d0db" font-size="8">helix_file_write pipeline (6 steps)</text>
+          <text x="710" y="439" text-anchor="middle" fill="#5a6472" font-size="7">version · scan · index · KG · notify</text>
+
+          <!-- PHASE 5: OBSERVER LOGS (bottom-left) -->
+          <rect x="30" y="382" width="240" height="72" rx="4" fill="#1a1f26" stroke="rgba(34,197,94,0.4)" stroke-width="1.5"/>
+          <text x="150" y="406" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="600" letter-spacing="1">⑤ OBSERVER LOGS</text>
+          <text x="150" y="423" text-anchor="middle" fill="#c8d0db" font-size="8">All events captured</text>
+          <text x="150" y="439" text-anchor="middle" fill="#5a6472" font-size="7">Haiku reconciler cron · 3:30 UTC</text>
+
+          <!-- PHASE 6: HELIX ENRICHES (left) -->
+          <rect x="18" y="255" width="215" height="72" rx="4" fill="#1a1f26" stroke="rgba(59,130,246,0.4)" stroke-width="1.5"/>
+          <text x="125" y="279" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600" letter-spacing="1">⑥ HELIX ENRICHES</text>
+          <text x="125" y="296" text-anchor="middle" fill="#c8d0db" font-size="8">Semantic chunking</text>
+          <text x="125" y="312" text-anchor="middle" fill="#5a6472" font-size="7">Chroma · FTS5 · KG updated</text>
+
+          <!-- PHASE 7: TIER-1 REBUILT (top-left) -->
+          <rect x="18" y="118" width="230" height="72" rx="4" fill="#1a1f26" stroke="rgba(0,212,170,0.4)" stroke-width="1.5"/>
+          <text x="133" y="142" text-anchor="middle" fill="#00d4aa" font-size="9" font-weight="600" letter-spacing="1">⑦ TIER-1 REBUILT</text>
+          <text x="133" y="159" text-anchor="middle" fill="#c8d0db" font-size="8">Context package assembled</text>
+          <text x="133" y="175" text-anchor="middle" fill="#5a6472" font-size="7">ready for next session → returns to ②</text>
+
+          <!-- CENTER -->
+          <text x="430" y="242" text-anchor="middle" fill="#00d4aa" font-size="13" font-weight="600" opacity="0.4">LOOP</text>
+          <text x="430" y="260" text-anchor="middle" fill="#5a6472" font-size="9" opacity="0.65">self-improving</text>
+          <text x="430" y="276" text-anchor="middle" fill="#5a6472" font-size="8" opacity="0.5">each session feeds the next</text>
+
+          <!-- ARROWS clockwise -->
+          <path d="M550 82 Q620 82 643 154" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#sl2)"/>
+          <path d="M743 190 L759 255" stroke="#00d4aa" stroke-width="1.5" fill="none" marker-end="url(#sl1)"/>
+          <path d="M759 327 Q759 390 710 382" stroke="#00d4aa" stroke-width="1.5" fill="none" marker-end="url(#sl1)"/>
+          <path d="M585 418 Q400 460 270 418" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#sl4)"/>
+          <path d="M150 382 L125 327" stroke="#22c55e" stroke-width="1.5" fill="none" marker-end="url(#sl3)"/>
+          <path d="M125 255 L133 190" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#sl2)"/>
+          <path d="M248 154 Q280 82 310 82" stroke="#00d4aa" stroke-width="1.5" fill="none" marker-end="url(#sl1)"/>
+        </svg>
+      </div>
+      <div class="ann-grid">
+        <div class="ann-card">
+          <div class="ann-label">WHY IT'S A LOOP, NOT A PIPELINE</div>
+          <div class="ann-text">A pipeline has a start and end. The Superloop has no end — each session's output becomes the next session's input. MemBrain at step ② is what physically closes the loop back into Claude.ai before each message is sent.</div>
+        </div>
+        <div class="ann-card">
+          <div class="ann-label">WHAT MAKES IT SELF-IMPROVING</div>
+          <div class="ann-text">Every helix_file_write call (step ④) adds content to 3 search engines simultaneously. The more sessions that run, the richer the tier-1 context MemBrain can inject. The system accumulates intelligence by operating normally.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         06 INFRASTRUCTURE
+    ═══════════════════════════════════ -->
+    <div class="diagram-page" id="diag-infra">
+      <div class="diagram-header">
+        <div class="badge-row">
+          <span class="diag-badge badge-infra">INFRA VIEW</span>
+          <span class="diag-badge badge-infra">VPS TOPOLOGY</span>
+        </div>
+        <div class="diagram-title">Infrastructure — VPS Topology</div>
+        <div class="diagram-desc">Physical deployment view. What runs on which server, which ports are exposed through Traefik, where data lives, and which containers are healthy vs pending setup.</div>
+      </div>
+      <div class="diagram-canvas">
+        <svg viewBox="0 0 860 520" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono',monospace">
+          <defs>
+            <marker id="i1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#00d4aa"/></marker>
+            <marker id="i2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#3b82f6"/></marker>
+            <marker id="i3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#5a6472"/></marker>
+          </defs>
+          <rect width="860" height="520" fill="#111418"/>
+          <pattern id="g6" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/></pattern>
+          <rect width="860" height="520" fill="url(#g6)"/>
+
+          <!-- INTERNET BAR -->
+          <rect x="15" y="15" width="830" height="55" rx="3" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="5,4"/>
+          <text x="35" y="36" fill="#5a6472" font-size="8" letter-spacing="2">INTERNET</text>
+          <rect x="100" y="26" width="130" height="30" rx="2" fill="#1a1f26" stroke="rgba(255,255,255,0.07)"/>
+          <text x="165" y="45" text-anchor="middle" fill="#c8d0db" font-size="8">claude.ai  MCP calls</text>
+          <rect x="250" y="26" width="130" height="30" rx="2" fill="#1a1f26" stroke="rgba(255,255,255,0.07)"/>
+          <text x="315" y="45" text-anchor="middle" fill="#c8d0db" font-size="8">browser HTTPS :443</text>
+          <rect x="400" y="26" width="145" height="30" rx="2" fill="#1a1f26" stroke="rgba(255,255,255,0.07)"/>
+          <text x="472" y="45" text-anchor="middle" fill="#c8d0db" font-size="8">MemBrain ext fetches tier-1</text>
+          <rect x="565" y="26" width="260" height="30" rx="2" fill="#1a1f26" stroke="rgba(255,255,255,0.07)"/>
+          <text x="695" y="45" text-anchor="middle" fill="#c8d0db" font-size="8">Dart MCP · Gmail MCP · external connectors</text>
+
+          <!-- VPS1 BOX -->
+          <rect x="15" y="90" width="525" height="415" rx="4" fill="rgba(0,212,170,0.015)" stroke="rgba(0,212,170,0.2)" stroke-width="1.5"/>
+          <text x="35" y="109" fill="#00d4aa" font-size="8" letter-spacing="2">VPS1 — 72.60.31.69 — HELIX + PRODUCTION SERVICES</text>
+
+          <!-- Traefik VPS1 -->
+          <rect x="35" y="118" width="488" height="40" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="279" y="135" text-anchor="middle" fill="#e8edf3" font-size="8" font-weight="500" letter-spacing="0.5">TRAEFIK (coolify-proxy)</text>
+          <text x="279" y="150" text-anchor="middle" fill="#5a6472" font-size="7">:80 → :443 · TLS termination · auto-discovers services via Docker labels · Let's Encrypt</text>
+
+          <!-- helix-cortex -->
+          <rect x="35" y="175" width="225" height="130" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.4)" stroke-width="1.5"/>
+          <text x="147" y="196" text-anchor="middle" fill="#00d4aa" font-size="8" letter-spacing="1">helix-cortex</text>
+          <text x="147" y="213" text-anchor="middle" fill="#c8d0db" font-size="8">FastAPI · :9050</text>
+          <text x="147" y="229" text-anchor="middle" fill="#5a6472" font-size="7">→ /mcp  20 tools</text>
+          <text x="147" y="244" text-anchor="middle" fill="#5a6472" font-size="7">→ /api/v1  REST</text>
+          <text x="147" y="259" text-anchor="middle" fill="#5a6472" font-size="7">helix.millyweb.com</text>
+          <text x="147" y="277" text-anchor="middle" fill="#22c55e" font-size="7">● running</text>
+          <text x="147" y="291" text-anchor="middle" fill="#5a6472" font-size="7">v0.8.1 Phase 8</text>
+
+          <!-- the-forge -->
+          <rect x="280" y="175" width="240" height="130" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.4)" stroke-width="1.5"/>
+          <text x="400" y="196" text-anchor="middle" fill="#f59e0b" font-size="8" letter-spacing="1">the-forge</text>
+          <text x="400" y="213" text-anchor="middle" fill="#c8d0db" font-size="8">FastAPI · :9095</text>
+          <text x="400" y="229" text-anchor="middle" fill="#5a6472" font-size="7">workspace CRUD + MinIO</text>
+          <text x="400" y="244" text-anchor="middle" fill="#5a6472" font-size="7">989 atoms · 113 molecules</text>
+          <text x="400" y="259" text-anchor="middle" fill="#5a6472" font-size="7">forge.millyweb.com</text>
+          <text x="400" y="277" text-anchor="middle" fill="#22c55e" font-size="7">● running</text>
+          <text x="400" y="291" text-anchor="middle" fill="#5a6472" font-size="7">v0.1.0</text>
+
+          <!-- Storage row -->
+          <rect x="35" y="325" width="112" height="85" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="91" y="346" text-anchor="middle" fill="#3b82f6" font-size="8">chromadb</text>
+          <text x="91" y="362" text-anchor="middle" fill="#5a6472" font-size="7">:8000 · vector</text>
+          <text x="91" y="378" text-anchor="middle" fill="#22c55e" font-size="7">● live</text>
+
+          <rect x="160" y="325" width="112" height="85" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+          <text x="216" y="346" text-anchor="middle" fill="#3b82f6" font-size="8">postgres</text>
+          <text x="216" y="362" text-anchor="middle" fill="#5a6472" font-size="7">:5432 · KG + docs</text>
+          <text x="216" y="378" text-anchor="middle" fill="#22c55e" font-size="7">● live</text>
+
+          <rect x="285" y="325" width="112" height="85" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+          <text x="341" y="346" text-anchor="middle" fill="#f59e0b" font-size="8">minio</text>
+          <text x="341" y="362" text-anchor="middle" fill="#5a6472" font-size="7">:9000/:9001</text>
+          <text x="341" y="378" text-anchor="middle" fill="#22c55e" font-size="7">● live</text>
+
+          <rect x="410" y="325" width="112" height="85" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.25)" stroke-width="1"/>
+          <text x="466" y="346" text-anchor="middle" fill="#22c55e" font-size="8">observer</text>
+          <text x="466" y="362" text-anchor="middle" fill="#5a6472" font-size="7">internal events</text>
+          <text x="466" y="378" text-anchor="middle" fill="#22c55e" font-size="7">● live</text>
+
+          <!-- helixmaster site -->
+          <rect x="35" y="428" width="488" height="60" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+          <text x="279" y="449" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">helixmaster (this site)</text>
+          <text x="279" y="466" text-anchor="middle" fill="#5a6472" font-size="7">build.helixcode.app · nginx · static HTML · git: github.com/rdmilly/helixmaster</text>
+          <text x="279" y="480" text-anchor="middle" fill="#22c55e" font-size="7">● live · auto-deploys on push</text>
+
+          <!-- VPS2 BOX -->
+          <rect x="555" y="90" width="290" height="415" rx="4" fill="rgba(59,130,246,0.015)" stroke="rgba(59,130,246,0.18)" stroke-width="1.5"/>
+          <text x="575" y="109" fill="#3b82f6" font-size="8" letter-spacing="2">VPS2 — 72.60.225.81 — DEV + ROUTING</text>
+
+          <!-- Traefik VPS2 -->
+          <rect x="575" y="118" width="250" height="40" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>
+          <text x="700" y="142" text-anchor="middle" fill="#c8d0db" font-size="8">Traefik (coolify-proxy) · :443</text>
+
+          <!-- provisioner -->
+          <rect x="575" y="175" width="118" height="100" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.35)" stroke-width="1"/>
+          <text x="634" y="196" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">provisioner</text>
+          <text x="634" y="213" text-anchor="middle" fill="#c8d0db" font-size="8">MCP registry</text>
+          <text x="634" y="229" text-anchor="middle" fill="#5a6472" font-size="7">45 svcs · 697 tools</text>
+          <text x="634" y="244" text-anchor="middle" fill="#5a6472" font-size="7">mcp.millyweb.com</text>
+          <text x="634" y="261" text-anchor="middle" fill="#22c55e" font-size="7">● live</text>
+
+          <!-- gateway -->
+          <rect x="707" y="175" width="118" height="100" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>
+          <text x="766" y="196" text-anchor="middle" fill="#c8d0db" font-size="8" letter-spacing="1">gateway</text>
+          <text x="766" y="213" text-anchor="middle" fill="#c8d0db" font-size="8">SSH execute</text>
+          <text x="766" y="229" text-anchor="middle" fill="#5a6472" font-size="7">VPS1+VPS2 shell</text>
+          <text x="766" y="244" text-anchor="middle" fill="#5a6472" font-size="7">mcp-dev.millyweb.com</text>
+          <text x="766" y="261" text-anchor="middle" fill="#22c55e" font-size="7">● live</text>
+
+          <!-- postiz -->
+          <rect x="575" y="293" width="118" height="95" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <text x="634" y="314" text-anchor="middle" fill="#c8d0db" font-size="8">postiz</text>
+          <text x="634" y="331" text-anchor="middle" fill="#5a6472" font-size="7">social scheduler</text>
+          <text x="634" y="347" text-anchor="middle" fill="#5a6472" font-size="7">memory-capped</text>
+          <text x="634" y="363" text-anchor="middle" fill="#f59e0b" font-size="7">⚠ OAuth pending</text>
+          <text x="634" y="379" text-anchor="middle" fill="#5a6472" font-size="7">postiz.millyweb.com</text>
+
+          <!-- memory-ext -->
+          <rect x="707" y="293" width="118" height="95" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.25)" stroke-width="1"/>
+          <text x="766" y="314" text-anchor="middle" fill="#00d4aa" font-size="8">memory-ext</text>
+          <text x="766" y="331" text-anchor="middle" fill="#5a6472" font-size="7">MemBrain build</text>
+          <text x="766" y="347" text-anchor="middle" fill="#5a6472" font-size="7">v0.5.2 active</text>
+          <text x="766" y="363" text-anchor="middle" fill="#22c55e" font-size="7">● deployed</text>
+
+          <!-- VPS2 stats footer -->
+          <rect x="575" y="406" width="250" height="82" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.05)"/>
+          <text x="700" y="426" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="1">VPS2 CONTAINER STATS</text>
+          <text x="700" y="444" text-anchor="middle" fill="#c8d0db" font-size="8">27 containers (down from 81)</text>
+          <text x="700" y="460" text-anchor="middle" fill="#5a6472" font-size="7">Cleaned Mar 4 2026 · Memory retired</text>
+          <text x="700" y="476" text-anchor="middle" fill="#5a6472" font-size="7">Daily cron maintenance · 3:30 UTC</text>
+
+          <!-- Cross-VPS arrows -->
+          <path d="M540 200 Q547 200 555 210" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#i2)" opacity="0.6"/>
+          <text x="547" y="192" fill="#3b82f6" font-size="7" text-anchor="middle">routes</text>
+
+          <text x="430" y="510" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">INFRA VIEW — VPS TOPOLOGY — helixmaster.millyweb.com</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>VPS1 — Helix core</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>VPS2 — Dev + routing</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Running</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Setup pending</div>
+      </div>
+    </div>
+
+  </div><!-- end arch-main -->
+</div><!-- end arch-layout --></div>
 <div id="tab-questions" class="tab-panel"><div class="lp"><div class="q-add-wrap"><div class="q-add-lbl">+ add question</div><div class="q-add-row"><input class="q-input" id="q-new-text" placeholder="What needs to be decided?"><input class="q-proj-input" id="q-new-proj" placeholder="component · type"></div><button class="bp" onclick="addQuestion()" style="font-size:10px;padding:5px 12px">add →</button></div><div id="q-list"></div></div></div>
 <script>
 const HELIX_BASE='https://helix.millyweb.com';
@@ -457,6 +1299,7 @@ function renderJournal(){
   }
 }
 
+function showArch(id,el){document.querySelectorAll('.diagram-page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.arch-nav-item').forEach(i=>i.classList.remove('active'));document.getElementById('diag-'+id).classList.add('active');el.classList.add('active');}
 function switchTop(id,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.top-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
 
 renderPNav();renderPDetail();renderLayerPills();renderLayers();renderJournal();renderQuestions();renderAdrs(staticAdrs);
