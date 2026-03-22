@@ -234,7 +234,7 @@ async function fetchLiveData(){
     document.getElementById('stat-cortex').textContent=d.cortex_uptime||'up';
     document.getElementById('stat-chunks').textContent=(d.chunks||0).toLocaleString();
     document.getElementById('stat-containers').textContent=d.containers||'?';
-    document.getElementById('stat-adrs').textContent=typeof d.adr_count==='number'?d.adr_count:(d.counts&&d.counts.decisions)||'?';
+    document.getElementById('stat-adrs').textContent=String(typeof d.adr_count==='number'?d.adr_count:(d.counts&&d.counts.decisions)||'?');
     document.getElementById('live-dot').className='li-dot';
     document.getElementById('live-label').textContent='live';
     if(d.last_session) updateLastSession(d.last_session);
@@ -297,9 +297,14 @@ function updateQuestions(apiQs){
 }
 function updateJournal(apiJ){
   if(!apiJ||!apiJ.length)return;
-  // Replace static entries entirely with live data from journal.md
+  // Replace static entries entirely with live data from journal.md, newest first
   jEntries.length=0;
-  apiJ.forEach(e=>jEntries.push(e));
+  const sorted=[...apiJ].sort((a,b)=>{
+    if(a.date>b.date)return -1;
+    if(a.date<b.date)return 1;
+    return 0;
+  });
+  sorted.forEach(e=>jEntries.push(e));
   renderJournal();
 }
 function updateAdrs(apiAdrs){ renderAdrs(apiAdrs); }
@@ -387,7 +392,22 @@ function saveDoc(){const title=document.getElementById('modal-doc-title').value.
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
 
 const jEntries=[{date:'2026-03-22',session:'helix-mcp-v2',title:'helix-mcp v2.0 — single MCP surface, all tools centralized through manifest → provisioner → helix-mcp → cortex REST',body:'Rewrote helix-mcp server.py with 33 tools (up from 10). All file ops, search, intelligence writes, language/compression, and scheduler tools now proxy to cortex REST endpoints. Added POST /api/v1/archive/record to cortex. Removed cortex MCP mount entirely — /mcp returns 404. Fixed pg_sync/SQLite bugs across 5 router/service files: VACUUM INTO, sqlite_master, FTS5 MATCH, and ? placeholder all replaced with proper Postgres equivalents. Provisioner manifest updated: helix-workspace renamed to helix, old cortex 25-tool entry removed, 47 servers total. 24/24 tool groups tested and passing.',decisions:[{text:'helix-mcp is the ONLY MCP surface — cortex exposes REST only (ADR-013)',status:'live'},{text:'pg_sync.sqlite_conn() must never be used with SQLite-only syntax (ADR-014)',status:'live'},{text:'Postgres FTS: use plainto_tsquery() not FTS5 MATCH syntax',status:'live'}],build_plan:[{text:'Build /api/v1/master/status endpoint',status:'next'},{text:'Fix Observer flush failures (fetch failed — non-fatal)',status:'next'},{text:'Wire Haiku reconciler to patch status JSON',status:'plan'}],glance:'Architecture is now clean. One MCP surface. Full pipeline on every write. 24/24 tests passing. The last remaining foundation item is the /api/v1/master/status endpoint to make this site fully live.',tags:['helix-mcp','mcp','architecture','consolidation','pg_sync']},{date:'2026-03-21',session:'722e9fa7',title:'helixmaster v5 deployed — real component audit + dynamic status wired',body:'helixmaster v5 deployed to helixmaster.millyweb.com. Site built from real codebase (8 layers, 40+ components from ls + docker ps). fetchLiveData() wired to /api/v1/master/status — site will update automatically once that endpoint is built. All 5 nice-to-haves implemented: live refresh, inline editor, last session strip, cross-links, question resolution.',decisions:[{text:'helix_file_write deploy_path is the correct tool for large file deploys',status:'live'},{text:'MinIO-direct writes for permanent docs (ADR-001)',status:'live'},{text:'/api/v1/master/status endpoint is Phase 4 next task',status:'live'}],build_plan:[{text:'Build /api/v1/master/status on Helix Cortex',status:'next'},{text:'Wire Haiku reconciler to patch status JSON',status:'plan'}],glance:'Site is live but static. One endpoint makes it fully dynamic. That is the next build task.',tags:['helixmaster','deploy','v5','dynamic']}];
-function renderJournal(){const el=document.getElementById('jlist');if(!el)return;el.innerHTML=jEntries.map(e=>`<div class="je"><div class="jd">${e.date} — session ${e.session}</div><div class="jt">${e.title}</div><div class="jb">${e.body}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${e.decisions.map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status}">${d.status}</div><div class="dec-txt">${d.text}</div></div>`).join('')}</div><div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${e.build_plan.map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status}">${d.status}</div><div class="dec-txt">${d.text}</div></div>`).join('')}</div><div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${e.glance}</div></div><div class="jtags">${e.tags.map(t=>`<span class="jtag">${t}</span>`).join('')}</div></div>`).join('');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderJournal(){
+  const el=document.getElementById('jlist');
+  if(!el)return;
+  try{
+    el.innerHTML=jEntries.map(e=>{
+      const decs=(e.decisions||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
+      const bp=(e.build_plan||[]).map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status}">${esc(d.status)}</div><div class="dec-txt">${esc(d.text)}</div></div>`).join('');
+      const tags=(e.tags||[]).map(t=>`<span class="jtag">${esc(t)}</span>`).join('');
+      return `<div class="je"><div class="jd">${esc(e.date)} — session ${esc(e.session)}</div><div class="jt">${esc(e.title)}</div><div class="jb">${esc(e.body)}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${decs||'<span style="color:var(--text-dim);font-size:11px">none recorded</span>'}</div>${bp?`<div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${bp}</div>`:''}<div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${esc(e.glance)}</div></div><div class="jtags">${tags}</div></div>`;
+    }).join('');
+  }catch(err){
+    console.error('[Journal] render failed:', err);
+    el.innerHTML='<div style="color:var(--danger);padding:20px">Journal render error: '+err.message+'</div>';
+  }
+} — session ${e.session}</div><div class="jt">${e.title}</div><div class="jb">${e.body}</div><div class="j-sec-lbl">Key decisions</div><div style="margin-bottom:11px">${e.decisions.map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status}">${d.status}</div><div class="dec-txt">${d.text}</div></div>`).join('')}</div><div class="j-sec-lbl">Added to build plan</div><div style="margin-bottom:11px">${e.build_plan.map(d=>`<div class="dec-row"><div class="dec-bdg db-${d.status==='next'?'next':d.status}">${d.status}</div><div class="dec-txt">${d.text}</div></div>`).join('')}</div><div class="glance"><div class="g-lbl2">final glance</div><div style="font-family:var(--sans);font-size:12px;color:var(--text);line-height:1.6">${e.glance}</div></div><div class="jtags">${e.tags.map(t=>`<span class="jtag">${t}</span>`).join('')}</div></div>`).join('');}
 
 function switchTop(id,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.top-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
 
