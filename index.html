@@ -953,140 +953,157 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
     <marker id="f2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#3b82f6"/></marker>
     <marker id="f3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f59e0b"/></marker>
     <marker id="f4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#22c55e"/></marker>
-    <filter id="glf"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#00d4aa" flood-opacity="0.2"/></filter>
+    <marker id="f5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#5a6472"/></marker>
+    <filter id="glf"><feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00d4aa" flood-opacity="0.15"/></filter>
   </defs>
   <rect width="860" height="520" fill="#111418"/>
   <pattern id="pgf" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/></pattern>
   <rect width="860" height="520" fill="url(#pgf)"/>
 
-  <text x="430" y="24" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="3">PLATFORM ARCHITECTURE — THREE LOGICAL LAYERS</text>
+  <text x="430" y="22" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="3">PLATFORM ARCHITECTURE — THREE LOGICAL LAYERS</text>
 
-  <!-- ─── LAYER 1: INTERFACE ─── -->
-  <rect x="20" y="36" width="820" height="100" rx="3" fill="rgba(59,130,246,0.03)" stroke="rgba(59,130,246,0.15)" stroke-width="1" stroke-dasharray="5,4"/>
-  <text x="42" y="55" fill="#3b82f6" font-size="8" letter-spacing="2">INTERFACE LAYER</text>
+  <!-- ─── LAYER 1: INTERFACE (left to right: User → Claude → MemBrain → Ext Connectors) ─── -->
+  <rect x="20" y="34" width="820" height="100" rx="3" fill="rgba(59,130,246,0.03)" stroke="rgba(59,130,246,0.15)" stroke-width="1" stroke-dasharray="5,4"/>
+  <text x="42" y="52" fill="#3b82f6" font-size="8" letter-spacing="2">INTERFACE LAYER</text>
 
-  <rect x="50" y="62" width="155" height="56" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-  <text x="127" y="83" text-anchor="middle" fill="#e8edf3" font-size="9" font-weight="600">CLAUDE.AI</text>
-  <text x="127" y="99" text-anchor="middle" fill="#5a6472" font-size="8">LLM · MCP host</text>
-  <text x="127" y="112" text-anchor="middle" fill="#5a6472" font-size="7">chat interface</text>
+  <!-- User -->
+  <rect x="40" y="60" width="150" height="58" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.35)" stroke-width="1"/>
+  <text x="115" y="80" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">USER</text>
+  <text x="115" y="96" text-anchor="middle" fill="#c8d0db" font-size="8">queries · builds</text>
+  <text x="115" y="110" text-anchor="middle" fill="#5a6472" font-size="7">reads · reviews</text>
 
-  <rect x="235" y="62" width="155" height="56" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
-  <text x="312" y="80" text-anchor="middle" fill="#3b82f6" font-size="9" font-weight="600">USER / DEVELOPER</text>
-  <text x="312" y="96" text-anchor="middle" fill="#5a6472" font-size="8">queries · builds</text>
-  <text x="312" y="112" text-anchor="middle" fill="#5a6472" font-size="7">reads · reviews</text>
+  <!-- Claude.ai -->
+  <rect x="215" y="60" width="150" height="58" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="290" y="80" text-anchor="middle" fill="#e8edf3" font-size="9" font-weight="600">CLAUDE.AI</text>
+  <text x="290" y="96" text-anchor="middle" fill="#c8d0db" font-size="8">LLM · MCP host</text>
+  <text x="290" y="110" text-anchor="middle" fill="#5a6472" font-size="7">chat interface</text>
 
-  <rect x="420" y="62" width="200" height="56" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.55)" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <text x="520" y="79" text-anchor="middle" fill="#00d4aa" font-size="9" font-weight="600" letter-spacing="1">MEMBRAIN</text>
-  <text x="520" y="94" text-anchor="middle" fill="#c8d0db" font-size="8">Chrome extension · context bridge</text>
-  <text x="520" y="108" text-anchor="middle" fill="#00d4aa" font-size="7">intercepts POST → injects tier-1 context → forwards</text>
+  <!-- MemBrain -->
+  <rect x="395" y="60" width="205" height="58" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.55)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="497" y="77" text-anchor="middle" fill="#00d4aa" font-size="9" font-weight="600" letter-spacing="1">MEMBRAIN</text>
+  <text x="497" y="92" text-anchor="middle" fill="#c8d0db" font-size="8">Chrome extension · context bridge</text>
+  <text x="497" y="106" text-anchor="middle" fill="#00d4aa" font-size="7">intercepts → injects tier-1 → forwards</text>
 
-  <rect x="645" y="62" width="175" height="56" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="732" y="80" text-anchor="middle" fill="#c8d0db" font-size="9" font-weight="600">EXT. CONNECTORS</text>
-  <text x="732" y="96" text-anchor="middle" fill="#5a6472" font-size="8">Dart · Gmail · Calendar</text>
-  <text x="732" y="112" text-anchor="middle" fill="#5a6472" font-size="7">GitHub · Slack · others</text>
+  <!-- External Connectors -->
+  <rect x="625" y="60" width="175" height="58" rx="3" fill="#1a1f26" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="712" y="78" text-anchor="middle" fill="#c8d0db" font-size="9" font-weight="600">EXT. CONNECTORS</text>
+  <text x="712" y="94" text-anchor="middle" fill="#5a6472" font-size="8">Dart · Gmail · Calendar</text>
+  <text x="712" y="108" text-anchor="middle" fill="#5a6472" font-size="7">GitHub · Slack · others</text>
 
-  <!-- Interface flow arrows -->
-  <line x1="205" y1="90" x2="233" y2="90" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#f2)"/>
-  <line x1="390" y1="90" x2="418" y2="90" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#f1)"/>
-  <text x="404" y="84" fill="#00d4aa" font-size="7" text-anchor="middle">enriches</text>
+  <!-- Interface flow: User → Claude → MemBrain → -->
+  <line x1="190" y1="89" x2="213" y2="89" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#f2)"/>
+  <line x1="365" y1="89" x2="393" y2="89" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#f1)"/>
+  <text x="379" y="83" fill="#00d4aa" font-size="7" text-anchor="middle">enriches</text>
 
-  <!-- Down to intelligence -->
-  <line x1="127" y1="118" x2="175" y2="188" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#f2)"/>
-  <line x1="520" y1="118" x2="400" y2="188" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#f1)"/>
-  <text x="365" y="162" fill="#00d4aa" font-size="8" text-anchor="middle">MCP tool calls</text>
-  <line x1="732" y1="118" x2="650" y2="188" stroke="#5a6472" stroke-width="1" marker-end="url(#f2)" opacity="0.5"/>
+  <!-- User → Claude down to Intelligence -->
+  <line x1="115" y1="118" x2="175" y2="188" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#f2)"/>
+
+  <!-- MemBrain → Helix (MCP calls) -->
+  <line x1="497" y1="118" x2="400" y2="188" stroke="#00d4aa" stroke-width="1.5" marker-end="url(#f1)"/>
+  <text x="460" y="160" fill="#00d4aa" font-size="8" text-anchor="middle">MCP tool calls</text>
+
+  <!-- Ext.Connectors → right side of Provisioner (curved path from top-right to right edge) -->
+  <path d="M800 118 Q820 155 820 280 Q820 310 820 315" stroke="#5a6472" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#f5)"/>
+  <text x="834" y="230" fill="#5a6472" font-size="7" text-anchor="middle">gateway</text>
 
   <!-- ─── LAYER 2: INTELLIGENCE ─── -->
-  <rect x="20" y="188" width="820" height="180" rx="3" fill="rgba(0,212,170,0.02)" stroke="rgba(0,212,170,0.22)" stroke-width="1.5"/>
+  <!-- Main band (excludes Provisioner) -->
+  <rect x="20" y="188" width="630" height="180" rx="3" fill="rgba(0,212,170,0.02)" stroke="rgba(0,212,170,0.22)" stroke-width="1.5"/>
   <text x="42" y="207" fill="#00d4aa" font-size="8" letter-spacing="2">INTELLIGENCE LAYER</text>
 
   <!-- Helix Cortex -->
-  <rect x="40" y="215" width="220" height="135" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.55)" stroke-width="1.5" filter="url(#glf)"/>
-  <rect x="40" y="215" width="220" height="22" rx="3" fill="rgba(0,212,170,0.1)"/>
-  <text x="150" y="231" text-anchor="middle" fill="#00d4aa" font-size="9" letter-spacing="1">HELIX CORTEX</text>
-  <text x="150" y="252" text-anchor="middle" fill="#c8d0db" font-size="9" font-weight="500">FastAPI · FastMCP · 20 tools</text>
-  <text x="150" y="270" text-anchor="middle" fill="#5a6472" font-size="8">5 routers: search · read · write</text>
-  <text x="150" y="286" text-anchor="middle" fill="#5a6472" font-size="8">intel · exchange</text>
-  <text x="150" y="302" text-anchor="middle" fill="#5a6472" font-size="8">service layer · storage layer</text>
-  <text x="150" y="320" text-anchor="middle" fill="#00d4aa" font-size="7">★ helix_file_write pipeline</text>
-  <text x="150" y="333" text-anchor="middle" fill="#5a6472" font-size="7">write → version → scan → index → KG → notify</text>
+  <rect x="38" y="215" width="210" height="135" rx="3" fill="#1a1f26" stroke="rgba(0,212,170,0.55)" stroke-width="1.5" filter="url(#glf)"/>
+  <rect x="38" y="215" width="210" height="22" rx="3" fill="rgba(0,212,170,0.1)"/>
+  <text x="143" y="231" text-anchor="middle" fill="#00d4aa" font-size="9" letter-spacing="1">HELIX CORTEX</text>
+  <text x="143" y="252" text-anchor="middle" fill="#c8d0db" font-size="9" font-weight="500">FastAPI · FastMCP · 20 tools</text>
+  <text x="143" y="269" text-anchor="middle" fill="#5a6472" font-size="8">5 routers: search · read · write</text>
+  <text x="143" y="285" text-anchor="middle" fill="#5a6472" font-size="8">intel · exchange</text>
+  <text x="143" y="301" text-anchor="middle" fill="#5a6472" font-size="8">service layer · storage layer</text>
+  <text x="143" y="319" text-anchor="middle" fill="#00d4aa" font-size="7">★ helix_file_write pipeline</text>
+  <text x="143" y="333" text-anchor="middle" fill="#5a6472" font-size="7">write → version → scan → index → KG</text>
 
   <!-- The Forge -->
-  <rect x="280" y="215" width="175" height="135" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
-  <text x="367" y="237" text-anchor="middle" fill="#f59e0b" font-size="9" letter-spacing="1">THE FORGE</text>
-  <text x="367" y="255" text-anchor="middle" fill="#c8d0db" font-size="9">File workspace</text>
-  <text x="367" y="272" text-anchor="middle" fill="#5a6472" font-size="8">CRUD · MinIO versioning</text>
-  <text x="367" y="288" text-anchor="middle" fill="#5a6472" font-size="8">atom scanner</text>
-  <text x="367" y="304" text-anchor="middle" fill="#f59e0b" font-size="7">989 atoms</text>
-  <text x="367" y="317" text-anchor="middle" fill="#f59e0b" font-size="7">113 molecules</text>
-  <text x="367" y="333" text-anchor="middle" fill="#5a6472" font-size="7">called by helix_file_write</text>
+  <rect x="265" y="215" width="170" height="135" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
+  <text x="350" y="237" text-anchor="middle" fill="#f59e0b" font-size="9" letter-spacing="1">THE FORGE</text>
+  <text x="350" y="255" text-anchor="middle" fill="#c8d0db" font-size="9">File workspace</text>
+  <text x="350" y="272" text-anchor="middle" fill="#5a6472" font-size="8">CRUD · MinIO versioning</text>
+  <text x="350" y="288" text-anchor="middle" fill="#5a6472" font-size="8">atom scanner</text>
+  <text x="350" y="304" text-anchor="middle" fill="#f59e0b" font-size="7">989 atoms · 113 molecules</text>
+  <text x="350" y="320" text-anchor="middle" fill="#5a6472" font-size="7">called by helix_file_write</text>
 
   <!-- Observer -->
-  <rect x="475" y="215" width="165" height="135" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.4)" stroke-width="1.5"/>
-  <text x="557" y="237" text-anchor="middle" fill="#22c55e" font-size="9" letter-spacing="1">OBSERVER</text>
-  <text x="557" y="255" text-anchor="middle" fill="#c8d0db" font-size="9">Event stream</text>
-  <text x="557" y="272" text-anchor="middle" fill="#5a6472" font-size="8">captures tool calls</text>
-  <text x="557" y="288" text-anchor="middle" fill="#5a6472" font-size="8">session tagging</text>
-  <text x="557" y="304" text-anchor="middle" fill="#5a6472" font-size="8">Haiku reconciler</text>
-  <text x="557" y="320" text-anchor="middle" fill="#22c55e" font-size="7">nightly cron → KB index</text>
-  <text x="557" y="333" text-anchor="middle" fill="#5a6472" font-size="7">closes the superloop</text>
+  <rect x="452" y="215" width="182" height="135" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.4)" stroke-width="1.5"/>
+  <text x="543" y="237" text-anchor="middle" fill="#22c55e" font-size="9" letter-spacing="1">OBSERVER</text>
+  <text x="543" y="255" text-anchor="middle" fill="#c8d0db" font-size="9">Event stream</text>
+  <text x="543" y="272" text-anchor="middle" fill="#5a6472" font-size="8">captures tool calls</text>
+  <text x="543" y="288" text-anchor="middle" fill="#5a6472" font-size="8">session tagging</text>
+  <text x="543" y="304" text-anchor="middle" fill="#5a6472" font-size="8">Haiku reconciler</text>
+  <text x="543" y="320" text-anchor="middle" fill="#22c55e" font-size="7">nightly cron → KB index</text>
+  <text x="543" y="333" text-anchor="middle" fill="#5a6472" font-size="7">closes the superloop</text>
 
-  <!-- Provisioner -->
-  <rect x="660" y="215" width="160" height="135" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.4)" stroke-width="1.5"/>
-  <text x="740" y="237" text-anchor="middle" fill="#3b82f6" font-size="9" letter-spacing="1">PROVISIONER</text>
-  <text x="740" y="255" text-anchor="middle" fill="#c8d0db" font-size="9">MCP registry</text>
-  <text x="740" y="272" text-anchor="middle" fill="#5a6472" font-size="8">45 servers</text>
-  <text x="740" y="288" text-anchor="middle" fill="#5a6472" font-size="8">697 tools</text>
-  <text x="740" y="304" text-anchor="middle" fill="#5a6472" font-size="8">HOT · WARM · COLD</text>
-  <text x="740" y="320" text-anchor="middle" fill="#3b82f6" font-size="7">routes tool calls</text>
-  <text x="740" y="333" text-anchor="middle" fill="#5a6472" font-size="7">to Helix Cortex</text>
+  <!-- Provisioner — separated to the right with dashed border, outside the main band -->
+  <rect x="672" y="200" width="168" height="155" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.4)" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="756" y="222" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="2">PROVISIONER</text>
+  <text x="756" y="242" text-anchor="middle" fill="#c8d0db" font-size="9">MCP registry</text>
+  <text x="756" y="259" text-anchor="middle" fill="#5a6472" font-size="8">routes ext. tools</text>
+  <text x="756" y="275" text-anchor="middle" fill="#5a6472" font-size="8">45 servers</text>
+  <text x="756" y="291" text-anchor="middle" fill="#5a6472" font-size="8">697 tools</text>
+  <text x="756" y="307" text-anchor="middle" fill="#5a6472" font-size="8">HOT · WARM · COLD</text>
+  <text x="756" y="325" text-anchor="middle" fill="#3b82f6" font-size="7">routes calls</text>
+  <text x="756" y="340" text-anchor="middle" fill="#5a6472" font-size="7">to Helix Cortex</text>
 
-  <!-- Connections in intelligence layer -->
-  <line x1="260" y1="278" x2="278" y2="278" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#f3)"/>
-  <text x="269" y="272" fill="#f59e0b" font-size="7" text-anchor="middle">file ops</text>
-  <line x1="455" y1="278" x2="473" y2="278" stroke="#22c55e" stroke-width="1" marker-end="url(#f4)" opacity="0.7"/>
-  <text x="464" y="272" fill="#22c55e" font-size="7" text-anchor="middle">events</text>
-  <line x1="655" y1="278" x2="658" y2="278" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#f2)"/>
+  <!-- Arrow from right edge of Provisioner → right edge hits the box, then to Helix -->
+  <!-- The gateway path lands at the right side (x=840) of provisioner box -->
+  <line x1="820" y1="315" x2="842" y2="315" stroke="#5a6472" stroke-width="1.5" marker-end="url(#f5)"/>
+  <!-- Provisioner → Helix Cortex (left edge of provisioner to right edge of helix band) -->
+  <line x1="672" y1="290" x2="636" y2="290" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#f2)"/>
+  <text x="654" y="284" fill="#3b82f6" font-size="7" text-anchor="middle">routes</text>
 
-  <!-- Down to storage -->
-  <line x1="150" y1="350" x2="150" y2="392" stroke="#3b82f6" stroke-width="1" marker-end="url(#f2)" opacity="0.5"/>
-  <line x1="367" y1="350" x2="500" y2="392" stroke="#f59e0b" stroke-width="1" marker-end="url(#f3)" opacity="0.5"/>
+  <!-- Internal intelligence arrows -->
+  <line x1="248" y1="278" x2="263" y2="278" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#f3)"/>
+  <text x="256" y="271" fill="#f59e0b" font-size="7" text-anchor="middle">file ops</text>
+  <line x1="435" y1="278" x2="450" y2="278" stroke="#22c55e" stroke-width="1" marker-end="url(#f4)" opacity="0.8"/>
+  <text x="443" y="271" fill="#22c55e" font-size="7" text-anchor="middle">events</text>
+
+  <!-- Down arrows to storage -->
+  <line x1="143" y1="350" x2="143" y2="394" stroke="#3b82f6" stroke-width="1" marker-end="url(#f2)" opacity="0.5"/>
+  <line x1="350" y1="350" x2="500" y2="394" stroke="#f59e0b" stroke-width="1" marker-end="url(#f3)" opacity="0.5"/>
 
   <!-- ─── LAYER 3: STORAGE ─── -->
-  <rect x="20" y="390" width="820" height="110" rx="3" fill="rgba(59,130,246,0.02)" stroke="rgba(59,130,246,0.12)" stroke-width="1" stroke-dasharray="5,4"/>
-  <text x="42" y="408" fill="#3b82f6" font-size="8" letter-spacing="2">STORAGE LAYER</text>
+  <rect x="20" y="392" width="820" height="110" rx="3" fill="rgba(59,130,246,0.02)" stroke="rgba(59,130,246,0.12)" stroke-width="1" stroke-dasharray="5,4"/>
+  <text x="42" y="410" fill="#3b82f6" font-size="8" letter-spacing="2">STORAGE LAYER</text>
 
-  <rect x="50" y="414" width="155" height="72" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
-  <text x="127" y="434" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">CHROMADB</text>
-  <text x="127" y="450" text-anchor="middle" fill="#c8d0db" font-size="8">Vector search</text>
-  <text x="127" y="465" text-anchor="middle" fill="#5a6472" font-size="7">semantic similarity</text>
-  <text x="127" y="477" text-anchor="middle" fill="#5a6472" font-size="7">conversation chunks</text>
+  <rect x="45" y="418" width="150" height="72" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+  <text x="120" y="438" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">CHROMADB</text>
+  <text x="120" y="454" text-anchor="middle" fill="#c8d0db" font-size="8">Vector search</text>
+  <text x="120" y="469" text-anchor="middle" fill="#5a6472" font-size="7">semantic similarity</text>
+  <text x="120" y="481" text-anchor="middle" fill="#5a6472" font-size="7">conversation chunks</text>
 
-  <rect x="220" y="414" width="155" height="72" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
-  <text x="297" y="434" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">POSTGRESQL</text>
-  <text x="297" y="450" text-anchor="middle" fill="#c8d0db" font-size="8">Relational store</text>
-  <text x="297" y="465" text-anchor="middle" fill="#5a6472" font-size="7">KB docs · ADRs</text>
-  <text x="297" y="477" text-anchor="middle" fill="#5a6472" font-size="7">KG entities + edges</text>
+  <rect x="210" y="418" width="150" height="72" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+  <text x="285" y="438" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">POSTGRESQL</text>
+  <text x="285" y="454" text-anchor="middle" fill="#c8d0db" font-size="8">Relational store</text>
+  <text x="285" y="469" text-anchor="middle" fill="#5a6472" font-size="7">KB docs · ADRs</text>
+  <text x="285" y="481" text-anchor="middle" fill="#5a6472" font-size="7">KG entities + edges</text>
 
-  <rect x="390" y="414" width="155" height="72" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
-  <text x="467" y="434" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">FTS5 / SQLITE</text>
-  <text x="467" y="450" text-anchor="middle" fill="#c8d0db" font-size="8">Full-text search</text>
-  <text x="467" y="465" text-anchor="middle" fill="#5a6472" font-size="7">keyword queries</text>
-  <text x="467" y="477" text-anchor="middle" fill="#5a6472" font-size="7">embedded in helix</text>
+  <rect x="375" y="418" width="150" height="72" rx="3" fill="#1a1f26" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+  <text x="450" y="438" text-anchor="middle" fill="#3b82f6" font-size="8" letter-spacing="1">FTS5 / SQLITE</text>
+  <text x="450" y="454" text-anchor="middle" fill="#c8d0db" font-size="8">Full-text search</text>
+  <text x="450" y="469" text-anchor="middle" fill="#5a6472" font-size="7">keyword queries</text>
+  <text x="450" y="481" text-anchor="middle" fill="#5a6472" font-size="7">embedded in helix</text>
 
-  <rect x="560" y="414" width="130" height="72" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
-  <text x="625" y="434" text-anchor="middle" fill="#f59e0b" font-size="8" letter-spacing="1">MINIO</text>
-  <text x="625" y="450" text-anchor="middle" fill="#c8d0db" font-size="8">Object store</text>
-  <text x="625" y="465" text-anchor="middle" fill="#5a6472" font-size="7">file versions</text>
-  <text x="625" y="477" text-anchor="middle" fill="#5a6472" font-size="7">S3-compatible</text>
+  <rect x="540" y="418" width="130" height="72" rx="3" fill="#1a1f26" stroke="rgba(245,158,11,0.3)" stroke-width="1"/>
+  <text x="605" y="438" text-anchor="middle" fill="#f59e0b" font-size="8" letter-spacing="1">MINIO</text>
+  <text x="605" y="454" text-anchor="middle" fill="#c8d0db" font-size="8">Object store</text>
+  <text x="605" y="469" text-anchor="middle" fill="#5a6472" font-size="7">file versions</text>
+  <text x="605" y="481" text-anchor="middle" fill="#5a6472" font-size="7">S3-compatible</text>
 
-  <rect x="705" y="414" width="115" height="72" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.2)" stroke-width="1"/>
-  <text x="762" y="434" text-anchor="middle" fill="#22c55e" font-size="8" letter-spacing="1">OBSERVER DB</text>
-  <text x="762" y="450" text-anchor="middle" fill="#c8d0db" font-size="8">SQLite</text>
-  <text x="762" y="465" text-anchor="middle" fill="#5a6472" font-size="7">events log</text>
-  <text x="762" y="477" text-anchor="middle" fill="#5a6472" font-size="7">sessions store</text>
+  <rect x="685" y="418" width="115" height="72" rx="3" fill="#1a1f26" stroke="rgba(34,197,94,0.2)" stroke-width="1"/>
+  <text x="742" y="438" text-anchor="middle" fill="#22c55e" font-size="8" letter-spacing="1">OBSERVER DB</text>
+  <text x="742" y="454" text-anchor="middle" fill="#c8d0db" font-size="8">SQLite</text>
+  <text x="742" y="469" text-anchor="middle" fill="#5a6472" font-size="7">events log</text>
+  <text x="742" y="481" text-anchor="middle" fill="#5a6472" font-size="7">sessions store</text>
 
-  <text x="430" y="510" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">INFRA VIEW — LOGICAL PLATFORM LAYERS — NO INFRASTRUCTURE DETAILS</text>
+  <text x="430" y="511" text-anchor="middle" fill="#5a6472" font-size="8" letter-spacing="2">INFRA VIEW — LOGICAL PLATFORM LAYERS</text>
 </svg>
       </div>
       <div class="legend">
